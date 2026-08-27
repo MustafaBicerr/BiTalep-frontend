@@ -1,0 +1,23 @@
+{
+  "403": {
+    "code": "403",
+    "title": "Erişim engellendi",
+    "description": "Bu sayfayı görüntülemek için yetkiniz yok.",
+    "primary": "Ana sayfaya dön",
+    "secondary": "Geri git"
+  },
+  "404": {
+    "code": "404",
+    "title": "Sayfa bulunamadı",
+    "description": "Aradığınız sayfa taşınmış veya silinmiş olabilir.",
+    "primary": "Ana sayfaya dön",
+    "secondary": "Geri git"
+  },
+  "500": {
+    "code": "500",
+    "title": "Sunucu hatası",
+    "description": "Beklenmeyen bir hata oluştu. Lütfen daha sonra tekrar deneyin.",
+    "primary": "Ana sayfaya dön",
+    "secondary": "Tekrar dene"
+  }
+}

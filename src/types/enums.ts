@@ -1,0 +1,50 @@
+export enum UserRole {
+  PERSONEL = 'PERSONEL',
+  ADMIN = 'ADMIN',
+}
+
+export enum RequestStatus {
+  NEW = 'NEW',
+  IN_REVIEW = 'IN_REVIEW',
+  APPROVED = 'APPROVED',
+  REJECTED = 'REJECTED',
+  CANCELLED = 'CANCELLED',
+}
+
+export enum FormType {
+  LEAVE = 'LEAVE',
+  TRAINING = 'TRAINING',
+  ADVANCE = 'ADVANCE',
+  MATERIAL = 'MATERIAL',
+  TASK = 'TASK',
+}
+
+export enum NotificationType {
+  STATUS_CHANGE = 'STATUS_CHANGE',
+  APPROVED = 'APPROVED',
+  REJECTED = 'REJECTED',
+  NEW_REQUEST = 'NEW_REQUEST',
+  FILE_UPLOADED = 'FILE_UPLOADED',
+  SYSTEM = 'SYSTEM',
+}
+
+export const FORM_TYPE_NAMES: Record<FormType, string> = {
+  [FormType.LEAVE]: 'İzin',
+  [FormType.TRAINING]: 'Eğitim',
+  [FormType.ADVANCE]: 'Avans',
+  [FormType.MATERIAL]: 'Malzeme',
+  [FormType.TASK]: 'Görev',
+}
+
+/** Valid status transitions */
+export const STATUS_TRANSITIONS: Record<RequestStatus, RequestStatus[]> = {
+  [RequestStatus.NEW]: [RequestStatus.IN_REVIEW, RequestStatus.CANCELLED],
+  [RequestStatus.IN_REVIEW]: [
+    RequestStatus.APPROVED,
+    RequestStatus.REJECTED,
+    RequestStatus.CANCELLED,
+  ],
+  [RequestStatus.APPROVED]: [],
+  [RequestStatus.REJECTED]: [],
+  [RequestStatus.CANCELLED]: [],
+}

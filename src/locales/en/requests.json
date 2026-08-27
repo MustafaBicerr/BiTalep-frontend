@@ -1,0 +1,48 @@
+{
+  "title": "Requests",
+  "myTitle": "My requests",
+  "newTitle": "New request",
+  "editTitle": "Edit request",
+  "detailTitle": "Request detail",
+  "table": {
+    "title": "Title",
+    "type": "Type",
+    "status": "Status",
+    "applicant": "Applicant",
+    "createdAt": "Created",
+    "updatedAt": "Updated",
+    "actions": "Actions",
+    "columns": "Columns"
+  },
+  "formType": {
+    "LEAVE": "Leave",
+    "TRAINING": "Training",
+    "ADVANCE": "Advance",
+    "MATERIAL": "Material",
+    "TASK": "Task"
+  },
+  "fields": {
+    "title": "Title",
+    "description": "Description",
+    "formType": "Request type",
+    "attachments": "Attachments"
+  },
+  "placeholders": {
+    "title": "Enter request title",
+    "description": "Briefly describe your request",
+    "formType": "Select type"
+  },
+  "charCount": "{{count}} / {{max}}",
+  "deleteConfirmTitle": "Delete request?",
+  "deleteConfirmDescription": "This request will be permanently deleted. Do you want to continue?",
+  "approveTitle": "Approve request",
+  "approveDescription": "Are you sure you want to approve this request?",
+  "rejectTitle": "Reject request",
+  "rejectDescription": "You may optionally provide a rejection reason.",
+  "rejectReason": "Rejection reason",
+  "bulkApprove": "Approve selected",
+  "bulkReject": "Reject selected",
+  "selectedCount": "{{count}} selected",
+  "timeline": "Timeline",
+  "cannotEdit": "Only new requests can be edited."
+}

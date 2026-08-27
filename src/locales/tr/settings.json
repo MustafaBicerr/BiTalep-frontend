@@ -1,0 +1,20 @@
+{
+  "title": "Ayarlar",
+  "general": "Genel",
+  "notifications": "Bildirimler",
+  "security": "Güvenlik",
+  "appearance": "Görünüm",
+  "language": "Dil",
+  "theme": "Tema",
+  "emailNotifications": "E-posta bildirimleri",
+  "pushNotifications": "Anlık bildirimler",
+  "statusChangeNotification": "Durum değişikliği bildirimi",
+  "changePassword": "Şifre değiştir",
+  "currentPassword": "Mevcut şifre",
+  "newPassword": "Yeni şifre",
+  "confirmPassword": "Yeni şifre (tekrar)",
+  "density": "Tablo yoğunluğu",
+  "densityCompact": "Sıkışık",
+  "densityComfortable": "Rahat",
+  "saved": "Ayarlar kaydedildi"
+}

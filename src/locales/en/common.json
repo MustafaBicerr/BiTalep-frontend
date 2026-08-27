@@ -1,0 +1,179 @@
+{
+  "appName": "BiTalep",
+  "loading": {
+    "pleaseWait": "Please wait"
+  },
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "retry": "Retry",
+    "close": "Close",
+    "back": "Back",
+    "clearFilters": "Clear filters",
+    "markAllRead": "Mark all as read",
+    "download": "Download",
+    "upload": "Upload",
+    "search": "Search",
+    "submit": "Submit"
+  },
+  "role": {
+    "admin": "Admin",
+    "employee": "Employee"
+  },
+  "theme": {
+    "switchToLight": "Switch to light theme",
+    "switchToDark": "Switch to dark theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "language": {
+    "label": "Language",
+    "tr": "Türkçe",
+    "en": "English"
+  },
+  "search": {
+    "placeholder": "Search…",
+    "clear": "Clear search",
+    "recent": "Recent searches",
+    "pages": "Pages",
+    "requests": "Requests",
+    "users": "Users",
+    "noResults": "No results",
+    "minChars": "Enter at least 2 characters"
+  },
+  "pagination": {
+    "range": "{{from}}–{{to}} / {{total}} records",
+    "first": "First page",
+    "prev": "Previous page",
+    "next": "Next page",
+    "last": "Last page"
+  },
+  "filter": {
+    "dateFrom": "From",
+    "dateTo": "To",
+    "status": "Status",
+    "formType": "Request type",
+    "keyword": "Keyword",
+    "open": "Filter",
+    "active": "Active filters",
+    "remove": "Remove {{label}} filter"
+  },
+  "empty": {
+    "noRequests": {
+      "title": "No requests yet",
+      "description": "Create your first request to get started.",
+      "action": "New request"
+    },
+    "noFiles": {
+      "title": "No files found",
+      "description": "You have not uploaded any files yet.",
+      "action": "Upload file"
+    },
+    "noNotifications": {
+      "title": "No notifications",
+      "description": "You have no new notifications."
+    },
+    "noResults": {
+      "title": "No results found",
+      "description": "Try adjusting your filters.",
+      "action": "Clear filters"
+    },
+    "noUsers": {
+      "title": "No users found",
+      "description": "There are no registered users.",
+      "action": "Add user"
+    }
+  },
+  "toast": {
+    "success": {
+      "saved": "Changes saved",
+      "created": "Record created",
+      "deleted": "Record deleted",
+      "approved": "Request approved",
+      "rejected": "Request rejected",
+      "uploaded": "File uploaded",
+      "copied": "Copied to clipboard"
+    },
+    "error": {
+      "generic": "Something went wrong. Please try again.",
+      "unauthorized": "Your session has expired. Please sign in again.",
+      "forbidden": "You do not have permission for this action.",
+      "conflict": "This action is not allowed in the current state.",
+      "network": "Connection error. Check your internet."
+    },
+    "info": {
+      "forgotPassword": "Password reset is not available yet. Use a demo account."
+    }
+  },
+  "file": {
+    "download": "Download file",
+    "previewUnsupported": "Preview is not supported for this file type.",
+    "size": "Size",
+    "uploadedAt": "Upload date"
+  },
+  "skipToContent": "Skip to content",
+  "demo": {
+    "title": "Demo accounts",
+    "admin": "Admin",
+    "employee": "Employee",
+    "password": "Password"
+  },
+  "auth": {
+    "login": {
+      "title": "Welcome",
+      "subtitle": "Sign in to your account",
+      "email": "Email",
+      "password": "Password",
+      "emailPlaceholder": "name@bitalep.com",
+      "passwordPlaceholder": "Enter your password",
+      "submit": "Sign in",
+      "forgotPassword": "Forgot password",
+      "rememberMe": "Remember me",
+      "noAccount": "Don't have an account?",
+      "registerLink": "Register",
+      "showPassword": "Show password",
+      "hidePassword": "Hide password"
+    },
+    "register": {
+      "title": "Create account",
+      "subtitle": "Join BiTalep",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm password",
+      "submit": "Register",
+      "hasAccount": "Already have an account?",
+      "loginLink": "Sign in"
+    }
+  },
+  "admin": {
+    "approve": "Approve",
+    "reject": "Reject",
+    "bulkApprove": "Bulk approve",
+    "bulkReject": "Bulk reject",
+    "users": {
+      "title": "User management",
+      "name": "Full name",
+      "email": "Email",
+      "role": "Role",
+      "createdAt": "Created at",
+      "actions": "Actions",
+      "changeRole": "Change role"
+    }
+  },
+  "users": {
+    "title": "User management",
+    "name": "Full name",
+    "email": "Email",
+    "role": "Role",
+    "createdAt": "Created at",
+    "actions": "Actions",
+    "changeRole": "Change role"
+  }
+}

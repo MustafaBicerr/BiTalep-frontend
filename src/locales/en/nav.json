@@ -1,0 +1,15 @@
+{
+  "dashboard": "Dashboard",
+  "newRequest": "New request",
+  "myRequests": "My requests",
+  "allRequests": "All requests",
+  "myFiles": "My files",
+  "notifications": "Notifications",
+  "profile": "Profile",
+  "settings": "Settings",
+  "userManagement": "User management",
+  "collapse": "Collapse sidebar",
+  "expand": "Expand sidebar",
+  "openMenu": "Open menu",
+  "closeMenu": "Close menu"
+}

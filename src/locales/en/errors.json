@@ -1,0 +1,23 @@
+{
+  "403": {
+    "code": "403",
+    "title": "Access denied",
+    "description": "You do not have permission to view this page.",
+    "primary": "Go to dashboard",
+    "secondary": "Go back"
+  },
+  "404": {
+    "code": "404",
+    "title": "Page not found",
+    "description": "The page you are looking for may have been moved or deleted.",
+    "primary": "Go to dashboard",
+    "secondary": "Go back"
+  },
+  "500": {
+    "code": "500",
+    "title": "Server error",
+    "description": "An unexpected error occurred. Please try again later.",
+    "primary": "Go to dashboard",
+    "secondary": "Retry"
+  }
+}

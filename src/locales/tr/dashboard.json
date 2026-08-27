@@ -1,0 +1,15 @@
+{
+  "title": "Kontrol paneli",
+  "totalRequests": "Toplam talep",
+  "pendingRequests": "Bekleyen",
+  "approvedRequests": "Onaylanan",
+  "rejectedRequests": "Reddedilen",
+  "myTotal": "Taleplerim",
+  "myPending": "Bekleyen taleplerim",
+  "todayRequests": "Bugünkü başvurular",
+  "recentRequests": "Son talepler",
+  "activity": "Aktivite akışı",
+  "statusDistribution": "Durum dağılımı",
+  "newRequestCta": "Yeni talep oluştur",
+  "viewAll": "Tümünü gör"
+}

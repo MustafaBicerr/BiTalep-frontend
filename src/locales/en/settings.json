@@ -1,0 +1,20 @@
+{
+  "title": "Settings",
+  "general": "General",
+  "notifications": "Notifications",
+  "security": "Security",
+  "appearance": "Appearance",
+  "language": "Language",
+  "theme": "Theme",
+  "emailNotifications": "Email notifications",
+  "pushNotifications": "Push notifications",
+  "statusChangeNotification": "Status change notifications",
+  "changePassword": "Change password",
+  "currentPassword": "Current password",
+  "newPassword": "New password",
+  "confirmPassword": "Confirm new password",
+  "density": "Table density",
+  "densityCompact": "Compact",
+  "densityComfortable": "Comfortable",
+  "saved": "Settings saved"
+}

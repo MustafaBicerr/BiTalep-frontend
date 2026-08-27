@@ -1,0 +1,23 @@
+{
+  "required": "Zorunlu",
+  "validation": {
+    "required": "Bu alan zorunludur",
+    "email": "Geçerli bir e-posta girin",
+    "minLength": "En az {{min}} karakter olmalı",
+    "maxLength": "En fazla {{max}} karakter olabilir",
+    "passwordMatch": "Şifreler eşleşmiyor",
+    "fileType": "Dosya türü desteklenmiyor",
+    "fileSize": "Dosya boyutu 10 MB’ı aşamaz"
+  },
+  "upload": {
+    "dragOrClick": "Dosyaları sürükleyin veya seçmek için tıklayın",
+    "dropHere": "Dosyaları buraya bırakın",
+    "ready": "Yüklemeye hazır",
+    "uploading": "Yükleniyor…",
+    "success": "Yükleme tamamlandı",
+    "error": "Yükleme başarısız",
+    "hint": "PDF, PNG, JPG, DOCX, XLSX — en fazla 10 MB",
+    "remove": "Dosyayı kaldır",
+    "cancel": "Yüklemeyi iptal et"
+  }
+}

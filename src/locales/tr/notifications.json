@@ -1,0 +1,23 @@
+{
+  "title": "Bildirimler",
+  "open": "Bildirimleri aç",
+  "markRead": "Okundu işaretle",
+  "markAllRead": "Tümünü okundu işaretle",
+  "viewAll": "Tüm bildirimler",
+  "unreadCount": "{{count}} okunmamış bildirim",
+  "types": {
+    "STATUS_CHANGE": "Durum değişikliği",
+    "APPROVED": "Onay",
+    "REJECTED": "Red",
+    "NEW_REQUEST": "Yeni talep",
+    "FILE_UPLOADED": "Dosya yüklendi",
+    "SYSTEM": "Sistem"
+  },
+  "timeline": {
+    "created": "Talep oluşturuldu",
+    "inReview": "İncelemeye alındı",
+    "approved": "Onaylandı",
+    "rejected": "Reddedildi",
+    "cancelled": "İptal edildi"
+  }
+}

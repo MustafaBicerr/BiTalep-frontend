@@ -1,0 +1,14 @@
+{
+  "title": "Profil",
+  "viewProfile": "Profili görüntüle",
+  "settings": "Ayarlar",
+  "logout": "Çıkış yap",
+  "openMenu": "Profil menüsünü aç",
+  "firstName": "Ad",
+  "lastName": "Soyad",
+  "email": "E-posta",
+  "role": "Rol",
+  "createdAt": "Kayıt tarihi",
+  "save": "Profili kaydet",
+  "updated": "Profil güncellendi"
+}

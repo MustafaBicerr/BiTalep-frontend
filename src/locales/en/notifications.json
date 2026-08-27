@@ -1,0 +1,23 @@
+{
+  "title": "Notifications",
+  "open": "Open notifications",
+  "markRead": "Mark as read",
+  "markAllRead": "Mark all as read",
+  "viewAll": "All notifications",
+  "unreadCount": "{{count}} unread notifications",
+  "types": {
+    "STATUS_CHANGE": "Status change",
+    "APPROVED": "Approved",
+    "REJECTED": "Rejected",
+    "NEW_REQUEST": "New request",
+    "FILE_UPLOADED": "File uploaded",
+    "SYSTEM": "System"
+  },
+  "timeline": {
+    "created": "Request created",
+    "inReview": "Moved to review",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "cancelled": "Cancelled"
+  }
+}

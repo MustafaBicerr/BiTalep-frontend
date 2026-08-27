@@ -1,0 +1,14 @@
+{
+  "title": "Profile",
+  "viewProfile": "View profile",
+  "settings": "Settings",
+  "logout": "Sign out",
+  "openMenu": "Open profile menu",
+  "firstName": "First name",
+  "lastName": "Last name",
+  "email": "Email",
+  "role": "Role",
+  "createdAt": "Created at",
+  "save": "Save profile",
+  "updated": "Profile updated"
+}

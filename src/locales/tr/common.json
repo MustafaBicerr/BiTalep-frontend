@@ -1,0 +1,179 @@
+{
+  "appName": "BiTalep",
+  "loading": {
+    "pleaseWait": "Lütfen bekleyin"
+  },
+  "actions": {
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "confirm": "Onayla",
+    "delete": "Sil",
+    "edit": "Düzenle",
+    "create": "Oluştur",
+    "retry": "Tekrar dene",
+    "close": "Kapat",
+    "back": "Geri",
+    "clearFilters": "Filtreleri temizle",
+    "markAllRead": "Tümünü okundu işaretle",
+    "download": "İndir",
+    "upload": "Yükle",
+    "search": "Ara",
+    "submit": "Gönder"
+  },
+  "role": {
+    "admin": "Yönetici",
+    "employee": "Personel"
+  },
+  "theme": {
+    "switchToLight": "Açık temaya geç",
+    "switchToDark": "Koyu temaya geç",
+    "light": "Açık",
+    "dark": "Koyu",
+    "system": "Sistem"
+  },
+  "language": {
+    "label": "Dil",
+    "tr": "Türkçe",
+    "en": "English"
+  },
+  "search": {
+    "placeholder": "Ara…",
+    "clear": "Aramayı temizle",
+    "recent": "Son aramalar",
+    "pages": "Sayfalar",
+    "requests": "Talepler",
+    "users": "Kullanıcılar",
+    "noResults": "Sonuç bulunamadı",
+    "minChars": "En az 2 karakter girin"
+  },
+  "pagination": {
+    "range": "{{from}}–{{to}} / {{total}} kayıt",
+    "first": "İlk sayfa",
+    "prev": "Önceki sayfa",
+    "next": "Sonraki sayfa",
+    "last": "Son sayfa"
+  },
+  "filter": {
+    "dateFrom": "Başlangıç",
+    "dateTo": "Bitiş",
+    "status": "Durum",
+    "formType": "Başvuru türü",
+    "keyword": "Anahtar kelime",
+    "open": "Filtrele",
+    "active": "Aktif filtreler",
+    "remove": "{{label}} filtresini kaldır"
+  },
+  "empty": {
+    "noRequests": {
+      "title": "Henüz talep yok",
+      "description": "İlk talebinizi oluşturarak başlayın.",
+      "action": "Yeni talep"
+    },
+    "noFiles": {
+      "title": "Dosya bulunamadı",
+      "description": "Henüz yüklenmiş bir dosyanız yok.",
+      "action": "Dosya yükle"
+    },
+    "noNotifications": {
+      "title": "Bildirim yok",
+      "description": "Yeni bildiriminiz bulunmuyor."
+    },
+    "noResults": {
+      "title": "Sonuç bulunamadı",
+      "description": "Filtrelerinizi değiştirerek tekrar deneyin.",
+      "action": "Filtreleri temizle"
+    },
+    "noUsers": {
+      "title": "Kullanıcı bulunamadı",
+      "description": "Kayıtlı kullanıcı yok.",
+      "action": "Kullanıcı ekle"
+    }
+  },
+  "toast": {
+    "success": {
+      "saved": "Değişiklikler kaydedildi",
+      "created": "Kayıt oluşturuldu",
+      "deleted": "Kayıt silindi",
+      "approved": "Talep onaylandı",
+      "rejected": "Talep reddedildi",
+      "uploaded": "Dosya yüklendi",
+      "copied": "Panoya kopyalandı"
+    },
+    "error": {
+      "generic": "Bir hata oluştu. Lütfen tekrar deneyin.",
+      "unauthorized": "Oturumunuz sona erdi. Lütfen tekrar giriş yapın.",
+      "forbidden": "Bu işlem için yetkiniz yok.",
+      "conflict": "Bu işlem mevcut durumla uyumlu değil.",
+      "network": "Bağlantı hatası. İnternetinizi kontrol edin."
+    },
+    "info": {
+      "forgotPassword": "Şifre sıfırlama henüz aktif değil. Demo hesabı kullanabilirsiniz."
+    }
+  },
+  "file": {
+    "download": "Dosyayı indir",
+    "previewUnsupported": "Bu dosya türü için önizleme desteklenmiyor.",
+    "size": "Boyut",
+    "uploadedAt": "Yüklenme tarihi"
+  },
+  "skipToContent": "İçeriğe geç",
+  "demo": {
+    "title": "Demo hesaplar",
+    "admin": "Yönetici",
+    "employee": "Personel",
+    "password": "Şifre"
+  },
+  "auth": {
+    "login": {
+      "title": "Hoş geldiniz",
+      "subtitle": "Hesabınıza giriş yapın",
+      "email": "E-posta",
+      "password": "Şifre",
+      "emailPlaceholder": "ornek@bitalep.com",
+      "passwordPlaceholder": "Şifrenizi girin",
+      "submit": "Giriş yap",
+      "forgotPassword": "Şifremi unuttum",
+      "rememberMe": "Beni hatırla",
+      "noAccount": "Hesabınız yok mu?",
+      "registerLink": "Kayıt olun",
+      "showPassword": "Şifreyi göster",
+      "hidePassword": "Şifreyi gizle"
+    },
+    "register": {
+      "title": "Hesap oluştur",
+      "subtitle": "BiTalep’e katılın",
+      "firstName": "Ad",
+      "lastName": "Soyad",
+      "email": "E-posta",
+      "password": "Şifre",
+      "confirmPassword": "Şifre tekrar",
+      "submit": "Kayıt ol",
+      "hasAccount": "Zaten hesabınız var mı?",
+      "loginLink": "Giriş yapın"
+    }
+  },
+  "admin": {
+    "approve": "Onayla",
+    "reject": "Reddet",
+    "bulkApprove": "Toplu onayla",
+    "bulkReject": "Toplu reddet",
+    "users": {
+      "title": "Kullanıcı yönetimi",
+      "name": "Ad soyad",
+      "email": "E-posta",
+      "role": "Rol",
+      "createdAt": "Kayıt tarihi",
+      "actions": "İşlemler",
+      "changeRole": "Rolü değiştir"
+    }
+  },
+  "users": {
+    "title": "Kullanıcı yönetimi",
+    "name": "Ad soyad",
+    "email": "E-posta",
+    "role": "Rol",
+    "createdAt": "Kayıt tarihi",
+    "actions": "İşlemler",
+    "changeRole": "Rolü değiştir"
+  }
+}

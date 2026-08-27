@@ -1,0 +1,15 @@
+{
+  "dashboard": "Ana sayfa",
+  "newRequest": "Yeni talep",
+  "myRequests": "Taleplerim",
+  "allRequests": "Tüm talepler",
+  "myFiles": "Dosyalarım",
+  "notifications": "Bildirimler",
+  "profile": "Profil",
+  "settings": "Ayarlar",
+  "userManagement": "Kullanıcı yönetimi",
+  "collapse": "Kenar çubuğunu daralt",
+  "expand": "Kenar çubuğunu genişlet",
+  "openMenu": "Menüyü aç",
+  "closeMenu": "Menüyü kapat"
+}

@@ -1,0 +1,15 @@
+{
+  "title": "Dashboard",
+  "totalRequests": "Total requests",
+  "pendingRequests": "Pending",
+  "approvedRequests": "Approved",
+  "rejectedRequests": "Rejected",
+  "myTotal": "My requests",
+  "myPending": "My pending",
+  "todayRequests": "Today's requests",
+  "recentRequests": "Recent requests",
+  "activity": "Activity feed",
+  "statusDistribution": "Status distribution",
+  "newRequestCta": "Create new request",
+  "viewAll": "View all"
+}

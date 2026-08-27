@@ -1,0 +1,48 @@
+{
+  "title": "Talepler",
+  "myTitle": "Taleplerim",
+  "newTitle": "Yeni talep",
+  "editTitle": "Talebi düzenle",
+  "detailTitle": "Talep detayı",
+  "table": {
+    "title": "Başlık",
+    "type": "Tür",
+    "status": "Durum",
+    "applicant": "Başvuran",
+    "createdAt": "Oluşturma",
+    "updatedAt": "Güncelleme",
+    "actions": "İşlemler",
+    "columns": "Kolonlar"
+  },
+  "formType": {
+    "LEAVE": "İzin",
+    "TRAINING": "Eğitim",
+    "ADVANCE": "Avans",
+    "MATERIAL": "Malzeme",
+    "TASK": "Görev"
+  },
+  "fields": {
+    "title": "Başlık",
+    "description": "Açıklama",
+    "formType": "Başvuru türü",
+    "attachments": "Ekler"
+  },
+  "placeholders": {
+    "title": "Talep başlığını girin",
+    "description": "Talebinizi kısaca açıklayın",
+    "formType": "Tür seçin"
+  },
+  "charCount": "{{count}} / {{max}}",
+  "deleteConfirmTitle": "Talep silinsin mi?",
+  "deleteConfirmDescription": "Bu talep kalıcı olarak silinecek. Devam etmek istiyor musunuz?",
+  "approveTitle": "Talebi onayla",
+  "approveDescription": "Bu talebi onaylamak istediğinize emin misiniz?",
+  "rejectTitle": "Talebi reddet",
+  "rejectDescription": "Reddetme nedenini isteğe bağlı olarak yazabilirsiniz.",
+  "rejectReason": "Red nedeni",
+  "bulkApprove": "Seçilenleri onayla",
+  "bulkReject": "Seçilenleri reddet",
+  "selectedCount": "{{count}} seçili",
+  "timeline": "Zaman çizelgesi",
+  "cannotEdit": "Yalnızca yeni talepler düzenlenebilir."
+}

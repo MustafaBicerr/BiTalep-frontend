@@ -1,0 +1,23 @@
+{
+  "required": "Required",
+  "validation": {
+    "required": "This field is required",
+    "email": "Enter a valid email",
+    "minLength": "Must be at least {{min}} characters",
+    "maxLength": "Must be at most {{max}} characters",
+    "passwordMatch": "Passwords do not match",
+    "fileType": "File type is not supported",
+    "fileSize": "File size cannot exceed 10 MB"
+  },
+  "upload": {
+    "dragOrClick": "Drag files here or click to select",
+    "dropHere": "Drop files here",
+    "ready": "Ready to upload",
+    "uploading": "Uploading…",
+    "success": "Upload complete",
+    "error": "Upload failed",
+    "hint": "PDF, PNG, JPG, DOCX, XLSX — max 10 MB",
+    "remove": "Remove file",
+    "cancel": "Cancel upload"
+  }
+}
