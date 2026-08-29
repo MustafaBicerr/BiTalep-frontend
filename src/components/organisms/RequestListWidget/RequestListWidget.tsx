@@ -79,7 +79,7 @@ export function RequestListWidget({
   const { items, totalItems } = query
 
   return (
-    <section className="flex flex-col rounded-lg border border-border bg-card p-4 shadow-sm">
+    <section className="flex flex-col overflow-hidden rounded-lg border border-border bg-card p-4 shadow-sm">
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
         <h2 className="flex items-center gap-2 text-h3">
           {title}

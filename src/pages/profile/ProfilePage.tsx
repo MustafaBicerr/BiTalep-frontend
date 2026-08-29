@@ -26,9 +26,9 @@ export function ProfilePage() {
   }
 
   return (
-    <div className="mx-auto max-w-xl space-y-6">
+    <div className="mx-auto w-full max-w-3xl shrink-0 space-y-6">
       <h1 className="text-h1">{t('profile:title')}</h1>
-      <div className="rounded-lg border border-border bg-card p-6">
+      <div className="rounded-lg border border-border bg-card p-6 md:p-8">
         <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-primary-subtle text-xl font-bold text-primary">
           {`${data.name[0] ?? ''}${data.surname[0] ?? ''}`.toUpperCase()}
         </div>
@@ -43,12 +43,14 @@ export function ProfilePage() {
             }
           })}
         >
-          <FormField id="name" label={t('profile:firstName')} required>
-            <Input {...form.register('name', { required: true })} />
-          </FormField>
-          <FormField id="surname" label={t('profile:lastName')} required>
-            <Input {...form.register('surname', { required: true })} />
-          </FormField>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <FormField id="name" label={t('profile:firstName')} required>
+              <Input {...form.register('name', { required: true })} />
+            </FormField>
+            <FormField id="surname" label={t('profile:lastName')} required>
+              <Input {...form.register('surname', { required: true })} />
+            </FormField>
+          </div>
           <FormField id="email" label={t('profile:email')}>
             <Input value={data.email} readOnly disabled />
           </FormField>

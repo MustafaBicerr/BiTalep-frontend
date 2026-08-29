@@ -9,7 +9,7 @@ interface AuthLayoutProps {
 
 export function AuthLayout({ children, className }: AuthLayoutProps) {
   return (
-    <div className={cn('relative flex min-h-screen items-center justify-center overflow-hidden p-4', className)}>
+    <div className={cn('relative flex h-full items-center justify-center overflow-hidden p-4', className)}>
       <div className="pointer-events-none absolute inset-0 bg-background" aria-hidden>
         <div
           className="absolute -left-[10%] -top-[20%] h-[70%] w-[60%] bg-primary-subtle opacity-90"

@@ -10,6 +10,21 @@
     @apply border-border;
   }
 
+  /*
+   * App shell owns the viewport. `min-h-screen` on body (100vh) is taller than
+   * `h-dvh` on mobile / DevTools, and Recharts' off-screen measurement node
+   * (`top: -20000px` on body) inflates document scrollHeight. Lock the document
+   * so only `main` scrolls, and only when page content actually overflows.
+   */
+  html,
+  body,
+  #root {
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
   html {
     font-family: var(--font-family);
     -webkit-font-smoothing: antialiased;
@@ -17,13 +32,20 @@
   }
 
   body {
-    @apply min-h-screen bg-background text-foreground antialiased;
+    @apply bg-background text-foreground antialiased;
     margin: 0;
     font-family: var(--font-family);
     font-size: var(--font-size-body);
     line-height: 1.5;
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
+  }
+
+  /* Keep Recharts text measurement off the document flow (width, not height). */
+  #recharts_measurement_span {
+    position: fixed !important;
+    top: 0 !important;
+    left: -20000px !important;
   }
 
   /* Focus-visible ring */

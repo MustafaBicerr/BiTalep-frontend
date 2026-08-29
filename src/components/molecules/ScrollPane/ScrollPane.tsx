@@ -53,7 +53,7 @@ export const ScrollPane = React.forwardRef<HTMLDivElement, ScrollPaneProps>(
 
     return (
       <div
-        className={cn('group/pane relative', fillParent && 'min-h-0 flex-1', wrapperClassName)}
+        className={cn('group/pane relative overflow-hidden', fillParent && 'min-h-0 flex-1', wrapperClassName)}
       >
         <div
           ref={setRefs}
@@ -61,9 +61,9 @@ export const ScrollPane = React.forwardRef<HTMLDivElement, ScrollPaneProps>(
           aria-label={label}
           tabIndex={0}
           onScroll={syncEdges}
-          style={maxHeight != null ? { maxHeight } : undefined}
+          style={maxHeight != null ? { maxHeight, contain: 'layout' } : { contain: 'layout' }}
           className={cn(
-            'overflow-y-auto overscroll-contain rounded-md ring-1 ring-transparent transition-[box-shadow] duration-fast',
+            'overflow-x-hidden overflow-y-auto overscroll-contain rounded-md ring-1 ring-transparent transition-[box-shadow] duration-fast',
             'group-hover/pane:ring-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
             fillParent && 'h-full',
             className,

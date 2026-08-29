@@ -14,7 +14,7 @@ function ErrorPageShell({
   const navigate = useNavigate()
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-4">
+    <div className="flex h-full items-center justify-center bg-background p-4">
       <div className="w-full max-w-[480px] text-center">
         <Icon className="mx-auto h-16 w-16 text-muted-foreground" aria-hidden />
         <p className="mt-6 text-h1 text-primary">{t(`${codeKey}.code`)}</p>

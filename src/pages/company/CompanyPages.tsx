@@ -129,8 +129,8 @@ export function CompanySummaryPage() {
 
       <section className="rounded-lg border border-border bg-card p-4 shadow-sm">
         <h3 className="mb-4 text-h3">{t('company:departmentBreakdown')}</h3>
-        <div className="h-[240px] w-full" aria-label={t('company:departmentBreakdown')} role="img">
-          <ResponsiveContainer width="100%" height="100%">
+        <div className="h-[240px] w-full overflow-hidden" aria-label={t('company:departmentBreakdown')} role="img">
+          <ResponsiveContainer width="100%" height={240}>
             <BarChart data={departmentChart} layout="vertical" margin={{ left: 8, right: 16 }}>
               <CartesianGrid stroke="var(--color-border)" horizontal={false} />
               <XAxis

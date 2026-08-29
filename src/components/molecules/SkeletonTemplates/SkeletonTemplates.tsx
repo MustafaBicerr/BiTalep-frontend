@@ -77,7 +77,7 @@ export function DetailSkeleton() {
 
 export function FormPageSkeleton({ fields = 3 }: { fields?: number }) {
   return (
-    <div className="mx-auto max-w-2xl space-y-4" aria-busy="true">
+    <div className="mx-auto w-full max-w-3xl space-y-4" aria-busy="true">
       <Skeleton className="h-8 w-56" />
       <div className="space-y-4 rounded-lg border border-border bg-card p-6">
         {Array.from({ length: fields }).map((_, i) => (

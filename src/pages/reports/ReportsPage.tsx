@@ -362,11 +362,11 @@ export function ReportsPage() {
                 <section className="rounded-lg border border-border bg-card p-4 shadow-sm">
                   <h3 className="mb-4 text-h3">{t('reports:departmentBreakdown')}</h3>
                   <div
-                    className="h-[240px] w-full"
+                    className="h-[240px] w-full overflow-hidden"
                     aria-label={t('reports:departmentBreakdown')}
                     role="img"
                   >
-                    <ResponsiveContainer width="100%" height="100%">
+                    <ResponsiveContainer width="100%" height={240}>
                       <BarChart data={departmentChart} layout="vertical" margin={{ left: 8, right: 16 }}>
                         <CartesianGrid stroke="var(--color-border)" horizontal={false} />
                         <XAxis
@@ -394,11 +394,11 @@ export function ReportsPage() {
                 <section className="rounded-lg border border-border bg-card p-4 shadow-sm">
                   <h3 className="mb-4 text-h3">{t('reports:statusBreakdown')}</h3>
                   <div
-                    className="h-[240px] w-full"
+                    className="h-[240px] w-full overflow-hidden"
                     aria-label={t('reports:statusBreakdown')}
                     role="img"
                   >
-                    <ResponsiveContainer width="100%" height="100%">
+                    <ResponsiveContainer width="100%" height={240}>
                       <BarChart data={statusChart}>
                         <CartesianGrid stroke="var(--color-border)" vertical={false} />
                         <XAxis

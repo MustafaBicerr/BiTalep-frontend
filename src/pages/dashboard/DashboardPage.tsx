@@ -170,7 +170,7 @@ export function DashboardPage() {
     `${request.formTypeName} · ${formatDateTime(request.createdDate, i18n.language)}`
 
   return (
-    <div className="space-y-6">
+    <div className="h-fit w-full shrink-0 space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-h1">{t('dashboard:title')}</h1>
         {!isAdmin ? (
@@ -243,8 +243,8 @@ export function DashboardPage() {
 
             <section className="rounded-lg border border-border bg-card p-4 shadow-sm">
               <h2 className="mb-4 text-h3">{t('dashboard:weeklyTrend')}</h2>
-              <div className="h-[180px] w-full" aria-label={t('dashboard:weeklyTrend')}>
-                <ResponsiveContainer width="100%" height="100%">
+              <div className="h-[180px] w-full overflow-hidden" aria-label={t('dashboard:weeklyTrend')}>
+                <ResponsiveContainer width="100%" height={180}>
                   <LineChart data={trendData}>
                     <CartesianGrid stroke="var(--color-border)" vertical={false} />
                     <XAxis dataKey="label" tick={{ fill: 'var(--color-muted-foreground)', fontSize: 11 }} />
@@ -264,8 +264,8 @@ export function DashboardPage() {
 
             <section className="rounded-lg border border-border bg-card p-4 shadow-sm">
               <h2 className="mb-4 text-h3">{t('dashboard:statusDistribution')}</h2>
-              <div className="h-[240px] w-full" aria-label={t('dashboard:statusDistribution')}>
-                <ResponsiveContainer width="100%" height="100%">
+              <div className="h-[240px] w-full overflow-hidden" aria-label={t('dashboard:statusDistribution')}>
+                <ResponsiveContainer width="100%" height={240}>
                   <BarChart data={chartData}>
                     <CartesianGrid stroke="var(--color-border)" vertical={false} />
                     <XAxis dataKey="name" tick={{ fill: 'var(--color-muted-foreground)', fontSize: 12 }} />
