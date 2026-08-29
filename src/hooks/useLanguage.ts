@@ -1,8 +1,6 @@
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { AppLanguage } from '@/lib/i18n'
-
-const STORAGE_KEY = 'bitalep-language'
+import { LANGUAGE_STORAGE_KEY, type AppLanguage } from '@/lib/i18n'
 
 export function useLanguage() {
   const { i18n } = useTranslation()
@@ -13,7 +11,7 @@ export function useLanguage() {
     (lng: AppLanguage) => {
       void i18n.changeLanguage(lng)
       try {
-        localStorage.setItem(STORAGE_KEY, lng)
+        localStorage.setItem(LANGUAGE_STORAGE_KEY, lng)
       } catch {
         /* ignore */
       }

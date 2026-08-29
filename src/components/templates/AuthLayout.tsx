@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { LanguageToggle } from '@/components/molecules/LanguageToggle'
 import { cn } from '@/utils/cn'
 
 interface AuthLayoutProps {
@@ -34,7 +35,12 @@ export function AuthLayout({ children, className }: AuthLayoutProps) {
           <path d="M100 600 L400 520 L700 640 L1100 480" fill="none" stroke="url(#auth-line)" strokeWidth="1.5" />
         </svg>
       </div>
-      <div className="relative z-10 w-full max-w-[440px]">{children}</div>
+      <div className="relative z-10 w-full max-w-[440px]">
+        <div className="mb-3 flex justify-end">
+          <LanguageToggle />
+        </div>
+        {children}
+      </div>
     </div>
   )
 }

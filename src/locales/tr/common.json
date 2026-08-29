@@ -24,6 +24,17 @@
     "admin": "Yönetici",
     "employee": "Personel"
   },
+  "department": {
+    "label": "Departman",
+    "all": "Tüm departmanlar",
+    "HR": "İnsan Kaynakları",
+    "IT": "Bilgi Teknolojileri",
+    "FINANCE": "Finans",
+    "SALES": "Satış",
+    "OPERATIONS": "Operasyon",
+    "MARKETING": "Pazarlama",
+    "OTHER": "Diğer"
+  },
   "theme": {
     "switchToLight": "Açık temaya geç",
     "switchToDark": "Koyu temaya geç",
@@ -34,7 +45,9 @@
   "language": {
     "label": "Dil",
     "tr": "Türkçe",
-    "en": "English"
+    "en": "English",
+    "trShort": "TR",
+    "enShort": "EN"
   },
   "search": {
     "placeholder": "Ara…",
@@ -42,9 +55,14 @@
     "recent": "Son aramalar",
     "pages": "Sayfalar",
     "requests": "Talepler",
-    "users": "Kullanıcılar",
+    "users": "Personeller",
     "noResults": "Sonuç bulunamadı",
     "minChars": "En az 2 karakter girin"
+  },
+  "infinite": {
+    "loadingMore": "Daha fazla kayıt yükleniyor",
+    "capReached": "İlk {{count}} kayıt gösteriliyor",
+    "viewAll": "Tümünü listede gör"
   },
   "pagination": {
     "range": "{{from}}–{{to}} / {{total}} kayıt",
@@ -59,6 +77,8 @@
     "status": "Durum",
     "formType": "Başvuru türü",
     "keyword": "Anahtar kelime",
+    "applicant": "Başvuran",
+    "applicantSearch": "Kişi ara…",
     "open": "Filtrele",
     "active": "Aktif filtreler",
     "remove": "{{label}} filtresini kaldır"
@@ -84,9 +104,9 @@
       "action": "Filtreleri temizle"
     },
     "noUsers": {
-      "title": "Kullanıcı bulunamadı",
-      "description": "Kayıtlı kullanıcı yok.",
-      "action": "Kullanıcı ekle"
+      "title": "Personel bulunamadı",
+      "description": "Kayıtlı personel yok.",
+      "action": "Personel ekle"
     }
   },
   "toast": {
@@ -158,7 +178,7 @@
     "bulkApprove": "Toplu onayla",
     "bulkReject": "Toplu reddet",
     "users": {
-      "title": "Kullanıcı yönetimi",
+      "title": "Personel yönetimi",
       "name": "Ad soyad",
       "email": "E-posta",
       "role": "Rol",
@@ -168,12 +188,84 @@
     }
   },
   "users": {
-    "title": "Kullanıcı yönetimi",
+    "title": "Personel yönetimi",
     "name": "Ad soyad",
+    "firstName": "Ad",
+    "lastName": "Soyad",
     "email": "E-posta",
     "role": "Rol",
+    "department": "Departman",
     "createdAt": "Kayıt tarihi",
     "actions": "İşlemler",
-    "changeRole": "Rolü değiştir"
+    "changeRole": "Rolü değiştir",
+    "roleConfirmTitle": "Rolü değiştir",
+    "roleConfirmDescription": "Bu personelin rolü {{role}} olarak güncellenecek.",
+    "backToList": "Personel listesi",
+    "copyEmail": "E-postayı kopyala",
+    "filterRequests": "Taleplerini listede filtrele",
+    "pastRequests": "Geçmiş talepler",
+    "noRequests": "Bu personelin talebi yok",
+    "add": "Personel ekle",
+    "addTitle": "Yeni personel",
+    "addDescription": "Ad, soyad, e-posta, rol ve departman bilgilerini girin. Şifre bu ekranda belirlenmez; e-posta ile gönderilir.",
+    "metrics": {
+      "total": "Toplam",
+      "pending": "Bekleyen",
+      "approved": "Onaylanan",
+      "rejected": "Reddedilen"
+    },
+    "import": {
+      "template": "Örnek yükleme şablonu",
+      "upload": "Excel ile yükle",
+      "filename": "bitalep-personel-sablon.xlsx",
+      "sheetData": "Personel",
+      "sheetGuide": "Kılavuz",
+      "colName": "Ad",
+      "colSurname": "Soyad",
+      "colEmail": "E-posta",
+      "colRole": "Rol",
+      "colDepartment": "Departman",
+      "guideField": "Alan",
+      "guideCode": "Kod",
+      "guideLabel": "Etiket",
+      "stage": {
+        "reading": "Excel verileri alınıyor",
+        "read": "Veriler alındı",
+        "processing": "Veriler işleniyor",
+        "processed": "Veriler işlendi",
+        "done": "Yükleme tamamlandı"
+      },
+      "percent": "%{{percent}}",
+      "errorsTitle": "Satır hataları",
+      "rowError": "Satır {{row}}: {{message}}",
+      "missingFields": "Zorunlu alanlar eksik",
+      "invalidRole": "Rol değeri geçersiz",
+      "invalidDepartment": "Departman değeri geçersiz",
+      "emailInvalid": "E-posta formatı geçersiz",
+      "emailTaken": "Bu e-posta zaten kayıtlı",
+      "emptyFile": "Excel dosyasında personel satırı yok",
+      "summaryOk": "{{count}} personel eklendi",
+      "summaryFail": "{{count}} satır atlandı"
+    },
+    "invite": {
+      "notice": "Hesap şifreleri belirttiğiniz e-posta adresine gönderilecektir.",
+      "sent": "Davet e-postası gönderildi",
+      "sentMany": "{{count}} davet e-postası gönderildi",
+      "previewTitle": "Gönderilen e-posta",
+      "previewDescription": "{{email}} adresine kurumsal davet iletildi.",
+      "copyPassword": "Şifreyi kopyala",
+      "copied": "Şifre kopyalandı",
+      "subject": "BiTalep hesabınız hazır",
+      "preheader": "Geçici şifreniz bu e-postada. Giriş yaptıktan sonra şifrenizi değiştirin.",
+      "greeting": "Merhaba {{name}},",
+      "intro": "BiTalep panelinde sizin için bir hesap oluşturuldu. Aşağıdaki geçici şifre ile giriş yapabilirsiniz.",
+      "passwordLabel": "Geçici şifreniz",
+      "copyHint": "Şifreyi seçip kopyalayabilirsiniz.",
+      "warningTitle": "Önemli:",
+      "warning": "Bu şifreyi kesinlikle üçüncü kişilerle paylaşmayın.",
+      "recommend": "Giriş yaptıktan sonra Ayarlar sayfasından şifrenizi değiştirmenizi öneririz.",
+      "cta": "Panele giriş yap",
+      "footer": "Bu ileti BiTalep tarafından hesabınız oluşturulduğu için gönderildi."
+    }
   }
 }

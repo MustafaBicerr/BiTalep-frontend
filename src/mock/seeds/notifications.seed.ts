@@ -1,8 +1,30 @@
 import { NotificationType } from '@/types/enums'
 import type { NotificationEntity } from '@/types/notification.types'
+import { DEMO_TENANT_ID, notificationId, requestId, userId } from '@/lib/ids'
+
+type DraftNotification = Omit<
+  NotificationEntity,
+  'id' | 'relatedRequestId' | 'actorId' | 'recipientId' | 'tenantId'
+> & {
+  id: number
+  relatedRequestId?: number
+  actorId?: number
+  recipientId: number
+}
+
+function toEntity(draft: DraftNotification): NotificationEntity {
+  return {
+    ...draft,
+    id: notificationId(draft.id),
+    relatedRequestId: draft.relatedRequestId != null ? requestId(draft.relatedRequestId) : undefined,
+    actorId: draft.actorId != null ? userId(draft.actorId) : undefined,
+    recipientId: userId(draft.recipientId),
+    tenantId: DEMO_TENANT_ID,
+  }
+}
 
 /** 12 notifications — all 6 types, at least 4 unread */
-export const notificationsSeed: NotificationEntity[] = [
+const DRAFTS: DraftNotification[] = [
   {
     id: 1,
     type: NotificationType.STATUS_CHANGE,
@@ -132,3 +154,5 @@ export const notificationsSeed: NotificationEntity[] = [
     recipientId: 7,
   },
 ]
+
+export const notificationsSeed: NotificationEntity[] = DRAFTS.map(toEntity)

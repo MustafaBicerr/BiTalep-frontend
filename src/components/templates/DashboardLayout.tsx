@@ -29,7 +29,7 @@ export function DashboardLayout({ children }: { children?: ReactNode }) {
   }, [setGlobalSearchOpen])
 
   return (
-    <div className="flex min-h-screen bg-muted/40">
+    <div className="flex h-dvh overflow-hidden bg-muted/40">
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-background focus:px-4 focus:py-2"
@@ -37,13 +37,13 @@ export function DashboardLayout({ children }: { children?: ReactNode }) {
         {t('skipToContent')}
       </a>
       <Sidebar />
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col">
         <Header />
         <main
           id="main-content"
           ref={mainRef}
           tabIndex={-1}
-          className="flex-1 outline-none p-4 md:p-6 xl:p-8"
+          className="flex min-h-0 flex-1 flex-col overflow-y-auto outline-none p-4 md:p-6 xl:p-8"
         >
           {children ?? <Outlet />}
         </main>

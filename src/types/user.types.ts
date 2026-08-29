@@ -1,12 +1,22 @@
-import type { UserRole } from './enums'
+import type { Department, UserRole } from './enums'
 
 export interface UserResponse {
-  id: number
+  id: string
   name: string
   surname: string
   email: string
   role: UserRole
+  department: Department
+  tenantId: string
   createdDate: string
+}
+
+export interface CreateUserRequest {
+  name: string
+  surname: string
+  email: string
+  role: UserRole
+  department: Department
 }
 
 export interface UpdateProfileRequest {
@@ -21,14 +31,17 @@ export interface UserListParams {
   sortOrder?: 'asc' | 'desc'
   keyword?: string
   role?: UserRole
+  department?: Department
 }
 
 export interface UserEntity {
-  id: number
+  id: string
   name: string
   surname: string
   email: string
   password: string
   role: UserRole
+  department: Department
+  tenantId: string
   createdDate: string
 }

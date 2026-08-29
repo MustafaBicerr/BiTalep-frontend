@@ -11,7 +11,7 @@ import type {
   RequestListParams,
   UpdateApplicationRequest,
 } from '@/types/request.types'
-import type { UpdateProfileRequest, UserListParams } from '@/types/user.types'
+import type { CreateUserRequest, UpdateProfileRequest, UserListParams } from '@/types/user.types'
 import type { UserRole } from '@/types/enums'
 import type { NotificationListParams } from '@/types/notification.types'
 
@@ -38,7 +38,7 @@ export class HttpRequestRepository implements IRequestRepository {
     const { data } = await api.get('/api/forms', { params })
     return data
   }
-  async getById(id: number) {
+  async getById(id: string) {
     const { data } = await api.get(`/api/forms/${id}`)
     return data
   }
@@ -46,39 +46,43 @@ export class HttpRequestRepository implements IRequestRepository {
     const { data } = await api.post('/api/forms', payload)
     return data
   }
-  async update(id: number, payload: UpdateApplicationRequest) {
+  async update(id: string, payload: UpdateApplicationRequest) {
     const { data } = await api.put(`/api/forms/${id}`, payload)
     return data
   }
-  async delete(id: number) {
+  async delete(id: string) {
     await api.delete(`/api/forms/${id}`)
   }
-  async approve(id: number) {
+  async startReview(id: string) {
+    const { data } = await api.put(`/api/forms/${id}/review`)
+    return data
+  }
+  async approve(id: string) {
     const { data } = await api.put(`/api/forms/${id}/approve`)
     return data
   }
-  async reject(id: number, reason?: string) {
+  async reject(id: string, reason?: string) {
     const { data } = await api.put(`/api/forms/${id}/reject`, { reason })
     return data
   }
 }
 
 export class HttpFileRepository implements IFileRepository {
-  async upload(file: File, applicationId: number) {
+  async upload(file: File, applicationId: string) {
     const form = new FormData()
     form.append('file', file)
     form.append('applicationId', String(applicationId))
     const { data } = await api.post('/api/files/upload', form)
     return data
   }
-  async delete(id: number) {
+  async delete(id: string) {
     await api.delete(`/api/files/${id}`)
   }
-  async getById(id: number) {
+  async getById(id: string) {
     const { data } = await api.get(`/api/files/${id}`)
     return data
   }
-  async listByRequest(applicationId: number) {
+  async listByRequest(applicationId: string) {
     const { data } = await api.get(`/api/forms/${applicationId}/files`)
     return data
   }
@@ -93,15 +97,19 @@ export class HttpUserRepository implements IUserRepository {
     const { data } = await api.get('/api/users', { params })
     return data
   }
-  async getById(id: number) {
+  async getById(id: string) {
     const { data } = await api.get(`/api/users/${id}`)
+    return data
+  }
+  async create(payload: CreateUserRequest) {
+    const { data } = await api.post('/api/users', payload)
     return data
   }
   async updateProfile(payload: UpdateProfileRequest) {
     const { data } = await api.put('/api/users/me', payload)
     return data
   }
-  async updateRole(id: number, role: UserRole) {
+  async updateRole(id: string, role: UserRole) {
     const { data } = await api.put(`/api/users/${id}/role`, { role })
     return data
   }
@@ -127,7 +135,7 @@ export class HttpNotificationRepository implements INotificationRepository {
     const { data } = await api.get('/api/notifications', { params })
     return data
   }
-  async markRead(id: number) {
+  async markRead(id: string) {
     await api.put(`/api/notifications/${id}/read`)
   }
   async markAllRead() {

@@ -1,3 +1,4 @@
+import { DEMO_TENANT_ID, newUuid } from '@/lib/ids'
 import { mockConfig } from '@/mock/config/mock.config'
 import {
   attachmentsSeed,
@@ -8,6 +9,7 @@ import {
 } from '@/mock/seeds'
 import { ApiError, buildPaginationMeta } from '@/types/api.types'
 import {
+  Department,
   FORM_TYPE_NAMES,
   NotificationType,
   RequestStatus,
@@ -15,6 +17,7 @@ import {
   UserRole,
   type FormType,
 } from '@/types/enums'
+import type { CompanyEntity } from '@/types/company.types'
 import type { AttachmentEntity, AttachmentResponse } from '@/types/file.types'
 import type {
   NotificationEntity,
@@ -39,26 +42,31 @@ import type {
 } from '@/types/user.types'
 
 const STORAGE_KEY = 'bitalep-mock-store'
+/** Bump when seed shape/count changes so stale localStorage is discarded */
+const SEED_VERSION = 4
+
+const DEMO_COMPANY: CompanyEntity = {
+  id: DEMO_TENANT_ID,
+  name: 'DEMO',
+  plan: 'PRO',
+  createdDate: '2025-01-01T00:00:00.000Z',
+}
 
 export interface SessionEntity {
   token: string
-  userId: number
+  userId: string
   createdAt: string
 }
 
 interface PersistableState {
+  seedVersion?: number
   users: UserEntity[]
   formTypes: FormTypeEntity[]
   requests: RequestEntity[]
   attachments: AttachmentEntity[]
   notifications: NotificationEntity[]
-  counters: {
-    users: number
-    requests: number
-    attachments: number
-    notifications: number
-  }
-  currentUserId: number | null
+  company: CompanyEntity
+  currentUserId: string | null
   sessions: Array<[string, SessionEntity]>
 }
 
@@ -73,6 +81,8 @@ function toUserResponse(user: UserEntity): UserResponse {
     surname: user.surname,
     email: user.email,
     role: user.role,
+    department: user.department,
+    tenantId: user.tenantId,
     createdDate: user.createdDate,
   }
 }
@@ -111,9 +121,9 @@ class MockStore {
   requests: RequestEntity[] = []
   attachments: AttachmentEntity[] = []
   notifications: NotificationEntity[] = []
+  company: CompanyEntity = { ...DEMO_COMPANY }
   sessions = new Map<string, SessionEntity>()
-  counters = { users: 0, requests: 0, attachments: 0, notifications: 0 }
-  currentUserId: number | null = null
+  currentUserId: string | null = null
 
   constructor() {
     this.loadInitial()
@@ -127,8 +137,11 @@ class MockStore {
       const raw = localStorage.getItem(STORAGE_KEY)
       if (raw) {
         try {
-          this.hydrate(JSON.parse(raw) as PersistableState)
-          return
+          const parsed = JSON.parse(raw) as PersistableState
+          if (parsed.seedVersion === SEED_VERSION) {
+            this.hydrate(parsed)
+            return
+          }
         } catch {
           // fall through to seeds
         }
@@ -146,28 +159,27 @@ class MockStore {
     }))
     this.attachments = attachmentsSeed.map((a) => ({ ...a }))
     this.notifications = notificationsSeed.map((n) => ({ ...n }))
+    this.company = { ...DEMO_COMPANY }
     this.sessions = new Map()
     this.currentUserId = null
-    this.counters = {
-      users: Math.max(...this.users.map((u) => u.id), 0),
-      requests: Math.max(...this.requests.map((r) => r.id), 0),
-      attachments: Math.max(...this.attachments.map((a) => a.id), 0),
-      notifications: Math.max(...this.notifications.map((n) => n.id), 0),
-    }
     this.persist()
   }
 
   private hydrate(state: PersistableState) {
     this.users = state.users.map((u) => {
-      if (u.password) return u
       const seed = usersSeed.find((s) => s.id === u.id || s.email === u.email)
-      return { ...u, password: seed?.password ?? 'Test1234!' }
+      return {
+        ...u,
+        password: u.password || seed?.password || 'Test1234!',
+        department: u.department ?? seed?.department ?? Department.OTHER,
+        tenantId: u.tenantId ?? seed?.tenantId ?? DEMO_TENANT_ID,
+      }
     })
     this.formTypes = state.formTypes
     this.requests = state.requests
     this.attachments = state.attachments
     this.notifications = state.notifications
-    this.counters = state.counters
+    this.company = state.company ?? { ...DEMO_COMPANY }
     this.currentUserId = state.currentUserId
     this.sessions = new Map(state.sessions ?? [])
   }
@@ -175,12 +187,15 @@ class MockStore {
   persist() {
     if (!mockConfig.persist || typeof localStorage === 'undefined') return
     const payload: PersistableState = {
+      seedVersion: SEED_VERSION,
       users: this.users.map((u) => ({
         id: u.id,
         name: u.name,
         surname: u.surname,
         email: u.email,
         role: u.role,
+        department: u.department,
+        tenantId: u.tenantId,
         createdDate: u.createdDate,
         password: '',
       })),
@@ -188,7 +203,7 @@ class MockStore {
       requests: this.requests,
       attachments: this.attachments,
       notifications: this.notifications,
-      counters: this.counters,
+      company: this.company,
       currentUserId: this.currentUserId,
       sessions: Array.from(this.sessions.entries()),
     }
@@ -204,7 +219,7 @@ class MockStore {
 
   // ─── Auth / session ─────────────────────────────────────────────
 
-  createSession(userId: number): string {
+  createSession(userId: string): string {
     const token = `mock-token-${userId}-${Date.now()}`
     this.sessions.set(token, {
       token,
@@ -258,9 +273,14 @@ class MockStore {
     const page = params.page ?? 1
     const pageSize = params.pageSize ?? 10
     let items = [...this.users]
+    const tenantId = this.getCurrentUser()?.tenantId ?? DEMO_TENANT_ID
+    items = items.filter((u) => u.tenantId === tenantId)
 
     if (params.role) {
       items = items.filter((u) => u.role === params.role)
+    }
+    if (params.department) {
+      items = items.filter((u) => u.department === params.department)
     }
     if (params.keyword) {
       const kw = params.keyword.toLowerCase()
@@ -287,7 +307,7 @@ class MockStore {
     }
   }
 
-  getUserById(id: number): UserResponse {
+  getUserById(id: string): UserResponse {
     const user = this.users.find((u) => u.id === id)
     if (!user) throw new ApiError(404, 'NOT_FOUND', 'errors:notFound')
     return toUserResponse(user)
@@ -299,20 +319,22 @@ class MockStore {
     email: string
     password: string
     role?: UserRole
+    department?: Department
   }): UserEntity {
     if (this.findUserByEmail(input.email)) {
       throw new ApiError(409, 'CONFLICT', 'errors:conflict', [
         { field: 'email', message: 'errors:emailTaken' },
       ])
     }
-    this.counters.users += 1
     const user: UserEntity = {
-      id: this.counters.users,
+      id: newUuid(),
       name: input.name,
       surname: input.surname,
       email: input.email,
       password: input.password,
       role: input.role ?? UserRole.PERSONEL,
+      department: input.department ?? Department.OTHER,
+      tenantId: this.getCurrentUser()?.tenantId ?? DEMO_TENANT_ID,
       createdDate: new Date().toISOString(),
     }
     this.users.push(user)
@@ -328,7 +350,7 @@ class MockStore {
     return toUserResponse(user)
   }
 
-  updateUserRole(id: number, role: UserRole): UserResponse {
+  updateUserRole(id: string, role: UserRole): UserResponse {
     const user = this.users.find((u) => u.id === id)
     if (!user) throw new ApiError(404, 'NOT_FOUND', 'errors:notFound')
     user.role = role
@@ -361,6 +383,7 @@ class MockStore {
       status: entity.status,
       applicant: toUserResponse(applicant),
       applicantId: entity.applicantId,
+      tenantId: entity.tenantId,
       createdDate: entity.createdDate,
       updatedDate: entity.updatedDate,
       timeline: entity.timeline.map((entry) => ({ ...entry })),
@@ -387,9 +410,22 @@ class MockStore {
     const page = params.page ?? 1
     const pageSize = params.pageSize ?? 10
 
-    let items = [...this.requests]
+    let items = this.requests.filter((r) => r.tenantId === user.tenantId)
     if (user.role === UserRole.PERSONEL) {
       items = items.filter((r) => r.applicantId === user.id)
+    }
+
+    if (params.applicantId != null && user.role === UserRole.ADMIN) {
+      items = items.filter((r) => r.applicantId === params.applicantId)
+    }
+
+    if (params.department?.length && user.role === UserRole.ADMIN) {
+      const allowed = new Set(params.department)
+      const departmentByUserId = new Map(this.users.map((u) => [u.id, u.department]))
+      items = items.filter((r) => {
+        const dept = departmentByUserId.get(r.applicantId)
+        return dept != null && allowed.has(dept)
+      })
     }
 
     if (params.status?.length) {
@@ -405,6 +441,13 @@ class MockStore {
     if (params.dateTo) {
       const to = endOfDayIso(new Date(params.dateTo))
       items = items.filter((r) => r.createdDate <= to)
+    }
+    if (params.updatedBefore) {
+      items = items.filter((r) => (r.updatedDate || r.createdDate) <= params.updatedBefore!)
+    }
+    if (params.hasAttachments != null) {
+      const withAttachment = new Set(this.attachments.map((a) => a.applicationId))
+      items = items.filter((r) => withAttachment.has(r.id) === params.hasAttachments)
     }
     if (params.keyword) {
       const kw = params.keyword.toLowerCase()
@@ -431,7 +474,7 @@ class MockStore {
     }
   }
 
-  getRequestById(id: number): ApplicationResponse {
+  getRequestById(id: string): ApplicationResponse {
     const entity = this.requests.find((r) => r.id === id)
     if (!entity) throw new ApiError(404, 'NOT_FOUND', 'errors:notFound')
     this.assertCanAccessRequest(entity)
@@ -441,14 +484,14 @@ class MockStore {
   createRequest(data: CreateApplicationRequest): ApplicationResponse {
     const user = this.requireCurrentUser()
     const now = new Date().toISOString()
-    this.counters.requests += 1
     const entity: RequestEntity = {
-      id: this.counters.requests,
+      id: newUuid(),
       title: data.title,
       description: data.description,
       formType: data.formType,
       status: RequestStatus.NEW,
       applicantId: user.id,
+      tenantId: user.tenantId,
       createdDate: now,
       updatedDate: now,
       timeline: [
@@ -463,7 +506,7 @@ class MockStore {
     this.requests.unshift(entity)
 
     // Notify admins of new request
-    for (const admin of this.users.filter((u) => u.role === UserRole.ADMIN)) {
+    for (const admin of this.users.filter((u) => u.role === UserRole.ADMIN && u.tenantId === user.tenantId)) {
       this.createNotification({
         type: NotificationType.NEW_REQUEST,
         title: 'Yeni talep',
@@ -478,7 +521,7 @@ class MockStore {
     return this.mapRequest(entity)
   }
 
-  updateRequest(id: number, data: UpdateApplicationRequest): ApplicationResponse {
+  updateRequest(id: string, data: UpdateApplicationRequest): ApplicationResponse {
     const entity = this.requests.find((r) => r.id === id)
     if (!entity) throw new ApiError(404, 'NOT_FOUND', 'errors:notFound')
     this.assertCanAccessRequest(entity)
@@ -496,7 +539,7 @@ class MockStore {
     return this.mapRequest(entity)
   }
 
-  deleteRequest(id: number): void {
+  deleteRequest(id: string): void {
     const idx = this.requests.findIndex((r) => r.id === id)
     if (idx === -1) throw new ApiError(404, 'NOT_FOUND', 'errors:notFound')
     const entity = this.requests[idx]
@@ -513,9 +556,9 @@ class MockStore {
   }
 
   updateRequestStatus(
-    id: number,
+    id: string,
     newStatus: RequestStatus,
-    actorId: number,
+    actorId: string,
     description?: string,
   ): ApplicationResponse {
     const entity = this.requests.find((r) => r.id === id)
@@ -576,7 +619,7 @@ class MockStore {
     return { ...entity }
   }
 
-  listAttachmentsByRequest(applicationId: number): AttachmentResponse[] {
+  listAttachmentsByRequest(applicationId: string): AttachmentResponse[] {
     this.getRequestById(applicationId)
     return this.attachments
       .filter((a) => a.applicationId === applicationId)
@@ -595,27 +638,28 @@ class MockStore {
     return items.map((a) => ({ ...a }))
   }
 
-  getAttachmentById(id: number): AttachmentResponse {
+  getAttachmentById(id: string): AttachmentResponse {
     const entity = this.attachments.find((a) => a.id === id)
     if (!entity) throw new ApiError(404, 'NOT_FOUND', 'errors:notFound')
     this.getRequestById(entity.applicationId)
     return { ...entity }
   }
 
-  uploadAttachment(file: File, applicationId: number): AttachmentResponse {
+  uploadAttachment(file: File, applicationId: string): AttachmentResponse {
     this.getRequestById(applicationId)
     const user = this.requireCurrentUser()
-    this.counters.attachments += 1
     const now = new Date().toISOString()
+    const id = newUuid()
     const entity: AttachmentEntity = {
-      id: this.counters.attachments,
-      fileName: `file-${this.counters.attachments}-${file.name}`,
+      id,
+      fileName: `file-${id.slice(0, 8)}-${file.name}`,
       originalName: file.name,
       filePath: `/mock-files/${file.name}`,
       fileSize: file.size,
       mimeType: file.type || 'application/octet-stream',
       uploadDate: now,
       applicationId,
+      tenantId: user.tenantId,
     }
     this.attachments.push(entity)
 
@@ -632,7 +676,7 @@ class MockStore {
     return { ...entity }
   }
 
-  deleteAttachment(id: number): void {
+  deleteAttachment(id: string): void {
     const idx = this.attachments.findIndex((a) => a.id === id)
     if (idx === -1) throw new ApiError(404, 'NOT_FOUND', 'errors:notFound')
     const entity = this.attachments[idx]
@@ -647,14 +691,14 @@ class MockStore {
     type: NotificationType
     title: string
     description: string
-    recipientId: number
-    relatedRequestId?: number
-    actorId?: number
+    recipientId: string
+    relatedRequestId?: string
+    actorId?: string
     isRead?: boolean
   }) {
-    this.counters.notifications += 1
+    const recipient = this.users.find((u) => u.id === input.recipientId)
     const entity: NotificationEntity = {
-      id: this.counters.notifications,
+      id: newUuid(),
       type: input.type,
       title: input.title,
       description: input.description,
@@ -663,6 +707,7 @@ class MockStore {
       relatedRequestId: input.relatedRequestId,
       actorId: input.actorId,
       recipientId: input.recipientId,
+      tenantId: recipient?.tenantId ?? DEMO_TENANT_ID,
     }
     this.notifications.unshift(entity)
   }
@@ -700,7 +745,7 @@ class MockStore {
     }
   }
 
-  markNotificationRead(id: number): void {
+  markNotificationRead(id: string): void {
     const user = this.requireCurrentUser()
     const entity = this.notifications.find((n) => n.id === id)
     if (!entity || entity.recipientId !== user.id) {
@@ -728,7 +773,7 @@ class MockStore {
 
   getDashboardStats(): DashboardResponse {
     const user = this.requireCurrentUser()
-    let items = [...this.requests]
+    let items = this.requests.filter((r) => r.tenantId === user.tenantId)
     if (user.role === UserRole.PERSONEL) {
       items = items.filter((r) => r.applicantId === user.id)
     }
@@ -748,6 +793,28 @@ class MockStore {
       .slice(0, 10)
       .map((r) => this.mapRequest(r, { includeAttachments: false }))
 
+    const weeklyTrend: { date: string; count: number }[] = []
+    for (let i = 6; i >= 0; i--) {
+      const day = new Date()
+      day.setHours(0, 0, 0, 0)
+      day.setDate(day.getDate() - i)
+      const dayStart = startOfDayIso(day)
+      const dayEnd = endOfDayIso(day)
+      const dateKey = dayStart.slice(0, 10)
+      weeklyTrend.push({
+        date: dateKey,
+        count: items.filter((r) => r.createdDate >= dayStart && r.createdDate <= dayEnd).length,
+      })
+    }
+
+    const overdueMs = 3 * 24 * 60 * 60 * 1000
+    const now = Date.now()
+    const overduePendingCount = items.filter((r) => {
+      if (r.status !== RequestStatus.IN_REVIEW) return false
+      const anchor = new Date(r.updatedDate || r.createdDate).getTime()
+      return now - anchor > overdueMs
+    }).length
+
     return {
       totalRequests: items.length,
       pendingRequests: items.filter(
@@ -760,7 +827,14 @@ class MockStore {
       ).length,
       recentRequests: recent,
       statusDistribution,
+      weeklyTrend,
+      overduePendingCount,
     }
+  }
+
+  getCompany(): CompanyEntity {
+    this.requireCurrentUser()
+    return { ...this.company }
   }
 }
 

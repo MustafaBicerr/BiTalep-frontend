@@ -9,6 +9,7 @@ export interface MockDomainToggles {
   users: boolean
   dashboard: boolean
   notifications: boolean
+  company: boolean
 }
 
 export interface MockConfig {
@@ -40,6 +41,7 @@ export const mockConfig: MockConfig = {
     users: true,
     dashboard: true,
     notifications: true,
+    company: true,
   },
 }
 

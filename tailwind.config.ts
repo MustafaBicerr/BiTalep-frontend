@@ -143,6 +143,10 @@ const config: Config = {
           from: { opacity: '1' },
           to: { opacity: '0' },
         },
+        'expand-in': {
+          from: { opacity: '0', transform: 'translateY(-4px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        },
       },
       animation: {
         shimmer: 'shimmer 1.5s linear infinite',
@@ -154,6 +158,7 @@ const config: Config = {
         'slide-out-to-left': 'slide-out-to-left 0.2s var(--easing-default)',
         'fade-in': 'fade-in 0.2s var(--easing-default)',
         'fade-out': 'fade-out 0.15s var(--easing-default)',
+        'expand-in': 'expand-in 0.2s var(--easing-default)',
       },
     },
   },

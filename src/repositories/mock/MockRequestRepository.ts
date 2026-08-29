@@ -16,7 +16,7 @@ export class MockRequestRepository implements IRequestRepository {
     return mockStore.listRequests(params)
   }
 
-  async getById(id: number) {
+  async getById(id: string) {
     await MockDelay.wait('normal')
     MockErrorInjector.maybeThrow()
     return { data: mockStore.getRequestById(id) }
@@ -28,19 +28,28 @@ export class MockRequestRepository implements IRequestRepository {
     return { data: mockStore.createRequest(data) }
   }
 
-  async update(id: number, data: UpdateApplicationRequest) {
+  async update(id: string, data: UpdateApplicationRequest) {
     await MockDelay.wait('normal')
     MockErrorInjector.maybeThrow()
     return { data: mockStore.updateRequest(id, data) }
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: string): Promise<void> {
     await MockDelay.wait('normal')
     MockErrorInjector.maybeThrow()
     mockStore.deleteRequest(id)
   }
 
-  async approve(id: number) {
+  async startReview(id: string) {
+    await MockDelay.wait('normal')
+    MockErrorInjector.maybeThrow()
+    const actor = mockStore.requireCurrentUser()
+    return {
+      data: mockStore.updateRequestStatus(id, RequestStatus.IN_REVIEW, actor.id),
+    }
+  }
+
+  async approve(id: string) {
     await MockDelay.wait('normal')
     MockErrorInjector.maybeThrow()
     const actor = mockStore.requireCurrentUser()
@@ -49,7 +58,7 @@ export class MockRequestRepository implements IRequestRepository {
     }
   }
 
-  async reject(id: number, reason?: string) {
+  async reject(id: string, reason?: string) {
     await MockDelay.wait('normal')
     MockErrorInjector.maybeThrow()
     const actor = mockStore.requireCurrentUser()

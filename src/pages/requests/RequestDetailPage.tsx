@@ -3,9 +3,10 @@ import { useTranslation } from 'react-i18next'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'sonner'
 import { ConfirmDialog } from '@/components/molecules/ConfirmDialog'
+import { DepartmentBadge } from '@/components/molecules/DepartmentBadge'
 import { StatusBadge } from '@/components/molecules/StatusBadge'
 import { FileTypeIcon } from '@/components/molecules/FileTypeIcon'
-import { Spinner } from '@/components/atoms/Spinner'
+import { DetailSkeleton } from '@/components/molecules/SkeletonTemplates'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import {
@@ -27,7 +28,7 @@ import { formatDateTime } from '@/utils/formatDate'
 
 export function RequestDetailPage() {
   const { id } = useParams()
-  const requestId = Number(id)
+  const requestId = id ?? ''
   const { t, i18n } = useTranslation(['requests', 'common', 'notifications'])
   const navigate = useNavigate()
   const role = useAuthStore((s) => s.user?.role)
@@ -43,11 +44,7 @@ export function RequestDetailPage() {
   const [reason, setReason] = useState('')
 
   if (isLoading || !data) {
-    return (
-      <div className="flex justify-center py-16">
-        <Spinner />
-      </div>
-    )
+    return <DetailSkeleton />
   }
 
   const canEdit = data.status === RequestStatus.NEW && data.applicantId === userId
@@ -69,9 +66,12 @@ export function RequestDetailPage() {
 
       <section className="rounded-lg border border-border bg-card p-6">
         <p className="whitespace-pre-wrap text-base">{data.description}</p>
-        <p className="mt-4 text-sm text-muted-foreground">
-          {data.applicant.name} {data.applicant.surname}
-        </p>
+        <div className="mt-4 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+          <span>
+            {data.applicant.name} {data.applicant.surname}
+          </span>
+          <DepartmentBadge department={data.applicant.department} />
+        </div>
       </section>
 
       <section className="rounded-lg border border-border bg-card p-6">

@@ -2,14 +2,14 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { queryKeys } from '@/lib/queryClient'
 import { fileService } from '@/services/fileService'
 
-export function useFiles(applicationId?: number) {
+export function useFiles(applicationId?: string) {
   return useQuery({
     queryKey: queryKeys.files(applicationId),
     queryFn: () =>
       applicationId != null
         ? fileService.getFilesByRequest(applicationId)
         : fileService.list(),
-    enabled: applicationId == null || (Number.isFinite(applicationId) && applicationId > 0),
+    enabled: applicationId == null || Boolean(applicationId),
     staleTime: 60_000,
   })
 }
@@ -17,7 +17,7 @@ export function useFiles(applicationId?: number) {
 export function useUploadFile() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: ({ file, applicationId }: { file: File; applicationId: number }) =>
+    mutationFn: ({ file, applicationId }: { file: File; applicationId: string }) =>
       fileService.upload(file, applicationId),
     onSuccess: (_r, vars) => {
       void qc.invalidateQueries({ queryKey: queryKeys.files(vars.applicationId) })
@@ -30,7 +30,7 @@ export function useUploadFile() {
 export function useDeleteFile() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (id: number) => fileService.delete(id),
+    mutationFn: (id: string) => fileService.delete(id),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ['files'] })
       void qc.invalidateQueries({ queryKey: ['requests'] })

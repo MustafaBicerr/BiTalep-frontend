@@ -3,11 +3,13 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { EmptyState } from '@/components/molecules/EmptyState'
 import { Pagination } from '@/components/molecules/Pagination'
+import { ListSkeleton } from '@/components/molecules/SkeletonTemplates'
 import { Button } from '@/components/ui/button'
-import { Spinner } from '@/components/atoms/Spinner'
+import { Skeleton } from '@/components/ui/skeleton'
 import { useMarkAllRead, useMarkRead, useNotifications } from '@/hooks/useNotifications'
 import { formatRelative } from '@/utils/formatDate'
 import { cn } from '@/utils/cn'
+import { interactiveRow } from '@/utils/interactive'
 
 export function NotificationsPage() {
   const { t, i18n } = useTranslation(['notifications', 'common'])
@@ -19,8 +21,9 @@ export function NotificationsPage() {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center py-16">
-        <Spinner />
+      <div className="space-y-4">
+        <Skeleton className="h-8 w-48" />
+        <ListSkeleton rows={8} cols={3} />
       </div>
     )
   }
@@ -47,8 +50,9 @@ export function NotificationsPage() {
                 <Link
                   to={n.relatedRequestId ? `/requests/${n.relatedRequestId}` : '#'}
                   className={cn(
-                    'block min-h-16 p-4 hover:bg-muted/50',
-                    !n.isRead && 'bg-primary-subtle',
+                    'block min-h-16 p-4',
+                    interactiveRow,
+                    !n.isRead && 'bg-primary-subtle hover:bg-primary-subtle/70',
                   )}
                   onClick={() => {
                     if (!n.isRead) void markRead.mutateAsync(n.id)

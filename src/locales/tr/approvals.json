@@ -1,0 +1,18 @@
+{
+  "title": "Onay kuyruğu",
+  "tabInReview": "İncelemede",
+  "tabNew": "Yeni",
+  "waitingDays": "{{count}} gündür bekliyor",
+  "emptyTitle": "Bekleyen onay yok",
+  "emptyDescription": "Şu an onay bekleyen talep bulunmuyor.",
+  "viewAll": "Tüm talepler",
+  "open": "Aç",
+  "chipOverdue": "Geciken (3+ gün)",
+  "sortLabel": "Sıralama",
+  "sort": {
+    "waiting": "Bekleme süresi",
+    "newest": "Oluşturma: yeni → eski",
+    "oldest": "Oluşturma: eski → yeni",
+    "type": "Türe göre"
+  }
+}

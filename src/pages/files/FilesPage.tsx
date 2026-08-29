@@ -2,9 +2,12 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { EmptyState } from '@/components/molecules/EmptyState'
 import { FileTypeIcon } from '@/components/molecules/FileTypeIcon'
-import { Spinner } from '@/components/atoms/Spinner'
+import { ListSkeleton } from '@/components/molecules/SkeletonTemplates'
+import { Skeleton } from '@/components/ui/skeleton'
 import { useFiles } from '@/hooks/useFiles'
+import { cn } from '@/utils/cn'
 import { formatDateTime } from '@/utils/formatDate'
+import { interactiveTextLink } from '@/utils/interactive'
 
 export function FilesPage() {
   const { t, i18n } = useTranslation(['nav', 'common'])
@@ -12,8 +15,9 @@ export function FilesPage() {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center py-16">
-        <Spinner />
+      <div className="space-y-4">
+        <Skeleton className="h-8 w-40" />
+        <ListSkeleton rows={6} cols={3} />
       </div>
     )
   }
@@ -38,7 +42,7 @@ export function FilesPage() {
                   </p>
                 </div>
               </div>
-              <Link className="text-sm text-primary hover:underline" to={`/requests/${f.applicationId}`}>
+              <Link className={cn('text-sm text-primary', interactiveTextLink)} to={`/requests/${f.applicationId}`}>
                 #{f.applicationId}
               </Link>
             </li>

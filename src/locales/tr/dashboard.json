@@ -11,5 +11,31 @@
   "activity": "Aktivite akışı",
   "statusDistribution": "Durum dağılımı",
   "newRequestCta": "Yeni talep oluştur",
-  "viewAll": "Tümünü gör"
+  "viewAll": "Tümünü gör",
+  "pendingApprovals": "Bekleyen onaylar",
+  "viewApprovals": "Onay kuyruğu",
+  "noPendingApprovals": "Bekleyen onay yok",
+  "weeklyTrend": "Haftalık trend",
+  "overduePending": "{{count}} geciken onay",
+  "noRequestsYet": "Bu filtreyle talep bulunamadı",
+  "widget": {
+    "sortLabel": "Sıralama",
+    "sort": {
+      "newest": "Yeni → Eski",
+      "oldest": "Eski → Yeni",
+      "status": "Duruma göre",
+      "waiting": "Bekleme süresi",
+      "created": "Oluşturma tarihi",
+      "type": "Türe göre"
+    },
+    "chip": {
+      "all": "Tümü",
+      "today": "Bugün",
+      "week": "Bu hafta",
+      "withAttachment": "Ekli dosya",
+      "overdue": "Geciken (3+ gün)",
+      "arrivedThisWeek": "Bu hafta gelen",
+      "critical": "Kritik türler"
+    }
+  }
 }

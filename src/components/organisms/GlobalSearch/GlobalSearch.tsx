@@ -50,7 +50,7 @@ export function GlobalSearch() {
           <>
             <CommandEmpty>{t('common:search.noResults')}</CommandEmpty>
             <CommandGroup heading={t('common:search.requests')}>
-              {(requestsQuery.data?.data ?? []).map((r: { id: number; title: string }) => (
+              {(requestsQuery.data?.data ?? []).map((r: { id: string; title: string }) => (
                 <CommandItem key={r.id} onSelect={() => go(`/requests/${r.id}`)}>
                   {r.title}
                 </CommandItem>
@@ -59,8 +59,11 @@ export function GlobalSearch() {
             {role === UserRole.ADMIN ? (
               <CommandGroup heading={t('common:search.users')}>
                 {(usersQuery.data?.data ?? []).map(
-                  (u: { id: number; name: string; surname: string }) => (
-                  <CommandItem key={u.id} onSelect={() => go('/users')}>
+                  (u: { id: string; name: string; surname: string }) => (
+                  <CommandItem
+                    key={u.id}
+                    onSelect={() => go(`/requests?applicantId=${u.id}`)}
+                  >
                     {u.name} {u.surname}
                   </CommandItem>
                 ))}

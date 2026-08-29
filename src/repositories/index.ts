@@ -1,17 +1,20 @@
 import { isMockDomain, mockConfig, type ApiMode } from '@/mock/config/mock.config'
 import { HttpAuthRepository } from '@/repositories/http/HttpAuthRepository'
+import { HttpCompanyRepository } from '@/repositories/http/HttpCompanyRepository'
 import { HttpDashboardRepository } from '@/repositories/http/HttpDashboardRepository'
 import { HttpFileRepository } from '@/repositories/http/HttpFileRepository'
 import { HttpNotificationRepository } from '@/repositories/http/HttpNotificationRepository'
 import { HttpRequestRepository } from '@/repositories/http/HttpRequestRepository'
 import { HttpUserRepository } from '@/repositories/http/HttpUserRepository'
 import type { IAuthRepository } from '@/repositories/interfaces/IAuthRepository'
+import type { ICompanyRepository } from '@/repositories/interfaces/ICompanyRepository'
 import type { IDashboardRepository } from '@/repositories/interfaces/IDashboardRepository'
 import type { IFileRepository } from '@/repositories/interfaces/IFileRepository'
 import type { INotificationRepository } from '@/repositories/interfaces/INotificationRepository'
 import type { IRequestRepository } from '@/repositories/interfaces/IRequestRepository'
 import type { IUserRepository } from '@/repositories/interfaces/IUserRepository'
 import { MockAuthRepository } from '@/repositories/mock/MockAuthRepository'
+import { MockCompanyRepository } from '@/repositories/mock/MockCompanyRepository'
 import { MockDashboardRepository } from '@/repositories/mock/MockDashboardRepository'
 import { MockFileRepository } from '@/repositories/mock/MockFileRepository'
 import { MockNotificationRepository } from '@/repositories/mock/MockNotificationRepository'
@@ -25,6 +28,7 @@ export interface Repositories {
   users: IUserRepository
   dashboard: IDashboardRepository
   notifications: INotificationRepository
+  company: ICompanyRepository
 }
 
 export function createRepositories(mode: ApiMode = mockConfig.mode): Repositories {
@@ -47,6 +51,9 @@ export function createRepositories(mode: ApiMode = mockConfig.mode): Repositorie
     notifications: shouldUseMock('notifications')
       ? new MockNotificationRepository()
       : new HttpNotificationRepository(),
+    company: shouldUseMock('company')
+      ? new MockCompanyRepository()
+      : new HttpCompanyRepository(),
   }
 }
 

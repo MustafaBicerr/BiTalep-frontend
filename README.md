@@ -10,10 +10,12 @@ BiTalep, personel ve yöneticilerin izin, eğitim, avans, malzeme ve görev tale
 
 - Rol bazlı paneller (PERSONEL / ADMIN)
 - Talep listesi, oluşturma, düzenleme, detay, onay/red
-- Dashboard KPI’ları ve durum dağılımı grafiği
+- Onay kuyruğu, başvuran filtresi, kullanıcı arama
+- Dashboard KPI’ları, haftalık trend, bekleyen onaylar
+- Raporlar: client-side Excel (`.xlsx`) export
 - Bildirimler, global arama (Ctrl/Cmd+K), profil ve ayarlar
-- Dosya listesi, i18n (tr/en), light/dark tema
-- Mock seed: 7 kullanıcı, 15 talep, 8 dosya, 12 bildirim
+- Dosya listesi, i18n (tr/en), light tema
+- Mock seed: ~28 kullanıcı, ~36 talep (persist `seedVersion`)
 
 ## Technologies
 
@@ -21,7 +23,7 @@ BiTalep, personel ve yöneticilerin izin, eğitim, avans, malzeme ve görev tale
 - Tailwind CSS v3, shadcn/ui, Lucide
 - TanStack Query, Axios, Zustand
 - React Hook Form + Zod
-- react-i18next, Recharts, Sonner
+- react-i18next, Recharts, Sonner, SheetJS (`xlsx`)
 
 ## Installation
 

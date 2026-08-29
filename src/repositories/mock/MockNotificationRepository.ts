@@ -11,7 +11,7 @@ export class MockNotificationRepository implements INotificationRepository {
     return mockStore.listNotifications(params)
   }
 
-  async markRead(id: number): Promise<void> {
+  async markRead(id: string): Promise<void> {
     await MockDelay.wait('fast')
     MockErrorInjector.maybeThrow()
     mockStore.markNotificationRead(id)

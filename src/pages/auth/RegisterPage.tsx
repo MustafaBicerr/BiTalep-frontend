@@ -11,6 +11,8 @@ import { AuthLayout } from '@/components/templates/AuthLayout'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useRegister } from '@/hooks/useAuth'
+import { cn } from '@/utils/cn'
+import { interactiveTextLink } from '@/utils/interactive'
 
 export function RegisterPage() {
   const { t } = useTranslation(['common', 'forms'])
@@ -89,7 +91,7 @@ export function RegisterPage() {
 
         <p className="mt-6 text-center text-sm text-muted-foreground">
           {t('common:auth.register.hasAccount')}{' '}
-          <Link to="/login" className="text-primary hover:underline">
+          <Link to="/login" className={cn('text-primary', interactiveTextLink)}>
             {t('common:auth.register.loginLink')}
           </Link>
         </p>

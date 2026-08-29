@@ -1,21 +1,23 @@
 export interface AttachmentResponse {
-  id: number
+  id: string
   fileName: string
   originalName: string
   filePath: string
   fileSize: number
   mimeType: string
   uploadDate: string
-  applicationId: number
+  applicationId: string
+  tenantId: string
 }
 
 export interface AttachmentEntity {
-  id: number
+  id: string
   fileName: string
   originalName: string
   filePath: string
   fileSize: number
   mimeType: string
   uploadDate: string
-  applicationId: number
+  applicationId: string
+  tenantId: string
 }

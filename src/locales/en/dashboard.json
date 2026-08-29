@@ -11,5 +11,31 @@
   "activity": "Activity feed",
   "statusDistribution": "Status distribution",
   "newRequestCta": "Create new request",
-  "viewAll": "View all"
+  "viewAll": "View all",
+  "pendingApprovals": "Pending approvals",
+  "viewApprovals": "Approval queue",
+  "noPendingApprovals": "No pending approvals",
+  "weeklyTrend": "Weekly trend",
+  "overduePending": "{{count}} overdue approvals",
+  "noRequestsYet": "No requests match this filter",
+  "widget": {
+    "sortLabel": "Sort",
+    "sort": {
+      "newest": "Newest first",
+      "oldest": "Oldest first",
+      "status": "By status",
+      "waiting": "Waiting time",
+      "created": "Created date",
+      "type": "By type"
+    },
+    "chip": {
+      "all": "All",
+      "today": "Today",
+      "week": "This week",
+      "withAttachment": "With attachment",
+      "overdue": "Overdue (3+ days)",
+      "arrivedThisWeek": "Arrived this week",
+      "critical": "Critical types"
+    }
+  }
 }

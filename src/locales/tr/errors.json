@@ -19,5 +19,7 @@
     "description": "Beklenmeyen bir hata oluştu. Lütfen daha sonra tekrar deneyin.",
     "primary": "Ana sayfaya dön",
     "secondary": "Tekrar dene"
-  }
+  },
+  "emailTaken": "Bu e-posta adresi zaten kayıtlı",
+  "conflict": "Bu işlem mevcut durumla uyumlu değil."
 }

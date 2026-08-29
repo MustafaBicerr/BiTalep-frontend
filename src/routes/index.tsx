@@ -2,7 +2,8 @@ import { lazy, Suspense } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { DashboardLayout } from '@/components/templates/DashboardLayout'
 import { SettingsLayout } from '@/components/templates/SettingsLayout'
-import { Spinner } from '@/components/atoms/Spinner'
+import { CompanyLayout } from '@/components/templates/CompanyLayout'
+import { PageSkeleton } from '@/components/molecules/SkeletonTemplates'
 import { ProtectedRoute } from '@/routes/ProtectedRoute'
 import { RoleGuard } from '@/routes/RoleGuard'
 import { UserRole } from '@/types/enums'
@@ -37,6 +38,15 @@ const NotificationsPage = lazy(() =>
 const UserManagementPage = lazy(() =>
   import('@/pages/users/UserManagementPage').then((m) => ({ default: m.UserManagementPage })),
 )
+const UserDetailPage = lazy(() =>
+  import('@/pages/users/UserDetailPage').then((m) => ({ default: m.UserDetailPage })),
+)
+const ApprovalsPage = lazy(() =>
+  import('@/pages/approvals/ApprovalsPage').then((m) => ({ default: m.ApprovalsPage })),
+)
+const ReportsPage = lazy(() =>
+  import('@/pages/reports/ReportsPage').then((m) => ({ default: m.ReportsPage })),
+)
 const SettingsGeneralPage = lazy(() =>
   import('@/pages/settings/SettingsPage').then((m) => ({ default: m.SettingsGeneralPage })),
 )
@@ -49,13 +59,18 @@ const SettingsSecurityPage = lazy(() =>
 const SettingsAppearancePage = lazy(() =>
   import('@/pages/settings/SettingsPage').then((m) => ({ default: m.SettingsAppearancePage })),
 )
+const CompanyInfoPage = lazy(() =>
+  import('@/pages/company/CompanyPages').then((m) => ({ default: m.CompanyInfoPage })),
+)
+const CompanySummaryPage = lazy(() =>
+  import('@/pages/company/CompanyPages').then((m) => ({ default: m.CompanySummaryPage })),
+)
+const CompanyMembershipPage = lazy(() =>
+  import('@/pages/company/CompanyPages').then((m) => ({ default: m.CompanyMembershipPage })),
+)
 
 function Fallback() {
-  return (
-    <div className="flex justify-center py-16">
-      <Spinner />
-    </div>
-  )
+  return <PageSkeleton />
 }
 
 export function AppRouter() {
@@ -81,6 +96,14 @@ export function AppRouter() {
 
               <Route element={<RoleGuard roles={[UserRole.ADMIN]} />}>
                 <Route path="users" element={<UserManagementPage />} />
+                <Route path="users/:id" element={<UserDetailPage />} />
+                <Route path="approvals" element={<ApprovalsPage />} />
+                <Route path="reports" element={<ReportsPage />} />
+                <Route path="company" element={<CompanyLayout />}>
+                  <Route index element={<CompanyInfoPage />} />
+                  <Route path="summary" element={<CompanySummaryPage />} />
+                  <Route path="membership" element={<CompanyMembershipPage />} />
+                </Route>
               </Route>
 
               <Route path="settings" element={<SettingsLayout />}>

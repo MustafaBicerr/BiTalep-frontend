@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { cn } from '@/utils/cn'
+import { interactiveRow } from '@/utils/interactive'
 
 const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableElement>>(
   ({ className, ...props }, ref) => (
@@ -22,11 +23,30 @@ const TableBody = React.forwardRef<HTMLTableSectionElement, React.HTMLAttributes
 )
 TableBody.displayName = 'TableBody'
 
-const TableRow = React.forwardRef<HTMLTableRowElement, React.HTMLAttributes<HTMLTableRowElement>>(
-  ({ className, ...props }, ref) => (
+export interface TableRowProps extends React.HTMLAttributes<HTMLTableRowElement> {
+  /** Opt in to hover/active/focus affordances and Enter/Space activation. */
+  interactive?: boolean
+}
+
+const TableRow = React.forwardRef<HTMLTableRowElement, TableRowProps>(
+  ({ className, interactive, onClick, onKeyDown, tabIndex, ...props }, ref) => (
     <tr
       ref={ref}
-      className={cn('border-b border-border transition-colors hover:bg-muted/50 data-[state=selected]:bg-primary-subtle', className)}
+      className={cn(
+        'border-b border-border transition-colors data-[state=selected]:bg-primary-subtle',
+        interactive && interactiveRow,
+        className,
+      )}
+      onClick={onClick}
+      tabIndex={interactive ? (tabIndex ?? 0) : tabIndex}
+      onKeyDown={(event) => {
+        onKeyDown?.(event)
+        if (!interactive || !onClick || event.defaultPrevented) return
+        if (event.key !== 'Enter' && event.key !== ' ') return
+        if (event.target !== event.currentTarget) return
+        event.preventDefault()
+        onClick(event as unknown as React.MouseEvent<HTMLTableRowElement>)
+      }}
       {...props}
     />
   ),

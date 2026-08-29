@@ -19,6 +19,27 @@ export enum FormType {
   TASK = 'TASK',
 }
 
+export enum Department {
+  HR = 'HR',
+  IT = 'IT',
+  FINANCE = 'FINANCE',
+  SALES = 'SALES',
+  OPERATIONS = 'OPERATIONS',
+  MARKETING = 'MARKETING',
+  OTHER = 'OTHER',
+}
+
+/** Display order for department selects and report breakdowns. */
+export const DEPARTMENT_ORDER: Department[] = [
+  Department.HR,
+  Department.IT,
+  Department.FINANCE,
+  Department.SALES,
+  Department.OPERATIONS,
+  Department.MARKETING,
+  Department.OTHER,
+]
+
 export enum NotificationType {
   STATUS_CHANGE = 'STATUS_CHANGE',
   APPROVED = 'APPROVED',

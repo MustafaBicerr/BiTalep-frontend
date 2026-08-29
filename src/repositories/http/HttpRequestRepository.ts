@@ -16,7 +16,7 @@ export class HttpRequestRepository implements IRequestRepository {
     return data
   }
 
-  async getById(id: number) {
+  async getById(id: string) {
     const { data } = await api.get<ApiSuccessResponse<ApplicationResponse>>(
       `/api/forms/${id}`,
     )
@@ -31,7 +31,7 @@ export class HttpRequestRepository implements IRequestRepository {
     return data
   }
 
-  async update(id: number, payload: UpdateApplicationRequest) {
+  async update(id: string, payload: UpdateApplicationRequest) {
     const { data } = await api.put<ApiSuccessResponse<ApplicationResponse>>(
       `/api/forms/${id}`,
       payload,
@@ -39,18 +39,25 @@ export class HttpRequestRepository implements IRequestRepository {
     return data
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: string): Promise<void> {
     await api.delete(`/api/forms/${id}`)
   }
 
-  async approve(id: number) {
+  async startReview(id: string) {
+    const { data } = await api.put<ApiSuccessResponse<ApplicationResponse>>(
+      `/api/forms/${id}/review`,
+    )
+    return data
+  }
+
+  async approve(id: string) {
     const { data } = await api.put<ApiSuccessResponse<ApplicationResponse>>(
       `/api/forms/${id}/approve`,
     )
     return data
   }
 
-  async reject(id: number, reason?: string) {
+  async reject(id: string, reason?: string) {
     const { data } = await api.put<ApiSuccessResponse<ApplicationResponse>>(
       `/api/forms/${id}/reject`,
       { reason },

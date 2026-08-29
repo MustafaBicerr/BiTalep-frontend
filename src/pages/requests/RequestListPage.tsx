@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { toast } from 'sonner'
+import { ApplicantFilter } from '@/components/molecules/ApplicantFilter'
 import { EmptyState } from '@/components/molecules/EmptyState'
 import { Pagination } from '@/components/molecules/Pagination'
 import { SearchInput } from '@/components/molecules/SearchInput'
@@ -23,23 +24,62 @@ import {
   useRequests,
 } from '@/hooks/useRequests'
 import { useAuthStore } from '@/stores/authStore'
-import { FormType, RequestStatus, UserRole } from '@/types/enums'
+import { FormType, RequestStatus, UserRole, DEPARTMENT_ORDER, Department } from '@/types/enums'
+import { cn } from '@/utils/cn'
 import { formatDateTime } from '@/utils/formatDate'
+import { interactiveCard, interactiveTextLink } from '@/utils/interactive'
+import { statusKey } from '@/utils/status'
+
+type SortId = 'newest' | 'oldest' | 'updated' | 'status' | 'type'
+
+const SORTS: Record<SortId, { sortBy: string; sortOrder: 'asc' | 'desc' }> = {
+  newest: { sortBy: 'createdDate', sortOrder: 'desc' },
+  oldest: { sortBy: 'createdDate', sortOrder: 'asc' },
+  updated: { sortBy: 'updatedDate', sortOrder: 'desc' },
+  status: { sortBy: 'status', sortOrder: 'asc' },
+  type: { sortBy: 'formType', sortOrder: 'asc' },
+}
 
 export function RequestListPage() {
   const { t, i18n } = useTranslation(['requests', 'common', 'status'])
   const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
   const role = useAuthStore((s) => s.user?.role)
   const isAdmin = role === UserRole.ADMIN
 
+  const applicantId = searchParams.get('applicantId') ?? undefined
+
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
-  const [keyword, setKeyword] = useState('')
-  const [status, setStatus] = useState<string>('all')
-  const [formType, setFormType] = useState<string>('all')
-  const [dateFrom, setDateFrom] = useState('')
-  const [dateTo, setDateTo] = useState('')
-  const [selected, setSelected] = useState<number[]>([])
+  const [selected, setSelected] = useState<string[]>([])
+
+  // Filters live in the URL so drill-down deep links and reloads keep them.
+  const keyword = searchParams.get('keyword') ?? ''
+  const status = searchParams.get('status') ?? 'all'
+  const formType = searchParams.get('formType') ?? 'all'
+  const dateFrom = searchParams.get('dateFrom') ?? ''
+  const dateTo = searchParams.get('dateTo') ?? ''
+  const department = searchParams.get('department') ?? 'all'
+  const sortParam = searchParams.get('sort') ?? 'newest'
+  const sortId: SortId = sortParam in SORTS ? (sortParam as SortId) : 'newest'
+  const sort = SORTS[sortId]
+
+  const setParam = (key: string, value: string | undefined) => {
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev)
+        if (value) next.set(key, value)
+        else next.delete(key)
+        return next
+      },
+      { replace: true },
+    )
+    setPage(1)
+  }
+
+  const setApplicantId = (id: string | undefined) => {
+    setParam('applicantId', id != null ? String(id) : undefined)
+  }
 
   const params = useMemo(
     () => ({
@@ -50,10 +90,26 @@ export function RequestListPage() {
       formType: formType === 'all' ? undefined : [formType as FormType],
       dateFrom: dateFrom || undefined,
       dateTo: dateTo || undefined,
-      sortBy: 'createdDate',
-      sortOrder: 'desc' as const,
+      applicantId: isAdmin ? applicantId : undefined,
+      department:
+        department === 'all' ? undefined : [department as Department],
+      sortBy: sort.sortBy,
+      sortOrder: sort.sortOrder,
     }),
-    [page, pageSize, keyword, status, formType, dateFrom, dateTo],
+    [
+      page,
+      pageSize,
+      keyword,
+      status,
+      formType,
+      dateFrom,
+      dateTo,
+      applicantId,
+      isAdmin,
+      department,
+      sort.sortBy,
+      sort.sortOrder,
+    ],
   )
 
   const { data, isLoading } = useRequests(params)
@@ -63,15 +119,9 @@ export function RequestListPage() {
   const rows = data?.data ?? []
   const total = data?.meta?.totalItems ?? 0
 
-  const resetPage = () => setPage(1)
-
   const clearFilters = () => {
-    setKeyword('')
-    setStatus('all')
-    setFormType('all')
-    setDateFrom('')
-    setDateTo('')
-    resetPage()
+    setSearchParams(new URLSearchParams(), { replace: true })
+    setPage(1)
   }
 
   const toggleAll = (checked: boolean) => {
@@ -106,20 +156,14 @@ export function RequestListPage() {
 
       <div className="flex flex-wrap items-end gap-3 rounded-lg border border-border bg-card p-4">
         <div className="min-w-[200px] flex-1">
-          <SearchInput
-            value={keyword}
-            onChange={(v) => {
-              setKeyword(v)
-              resetPage()
-            }}
-          />
+          <SearchInput value={keyword} onChange={(v) => setParam('keyword', v || undefined)} />
         </div>
+        {isAdmin ? (
+          <ApplicantFilter value={applicantId} onChange={setApplicantId} />
+        ) : null}
         <Select
           value={status}
-          onValueChange={(v) => {
-            setStatus(v)
-            resetPage()
-          }}
+          onValueChange={(v) => setParam('status', v === 'all' ? undefined : v)}
         >
           <SelectTrigger className="w-[160px]">
             <SelectValue placeholder={t('common:filter.status')} />
@@ -135,10 +179,7 @@ export function RequestListPage() {
         </Select>
         <Select
           value={formType}
-          onValueChange={(v) => {
-            setFormType(v)
-            resetPage()
-          }}
+          onValueChange={(v) => setParam('formType', v === 'all' ? undefined : v)}
         >
           <SelectTrigger className="w-[160px]">
             <SelectValue placeholder={t('common:filter.formType')} />
@@ -152,18 +193,46 @@ export function RequestListPage() {
             ))}
           </SelectContent>
         </Select>
+        <Select
+          value={department}
+          onValueChange={(v) => setParam('department', v === 'all' ? undefined : v)}
+        >
+          <SelectTrigger className="w-[200px]" aria-label={t('common:department.label')}>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">{t('common:department.all')}</SelectItem>
+            {DEPARTMENT_ORDER.map((item) => (
+              <SelectItem key={item} value={item}>
+                {t(`common:department.${item}`)}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select
+          value={sortId}
+          onValueChange={(v) => setParam('sort', v === 'newest' ? undefined : v)}
+        >
+          <SelectTrigger className="w-[200px]" aria-label={t('requests:listSortLabel')}>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="newest">{t('requests:listSort.newest')}</SelectItem>
+            <SelectItem value="oldest">{t('requests:listSort.oldest')}</SelectItem>
+            <SelectItem value="updated">{t('requests:listSort.updated')}</SelectItem>
+            <SelectItem value="status">{t('requests:listSort.status')}</SelectItem>
+            <SelectItem value="type">{t('requests:listSort.type')}</SelectItem>
+          </SelectContent>
+        </Select>
         <DateRangePicker
           from={dateFrom}
           to={dateTo}
-          onFromChange={(v) => {
-            setDateFrom(v)
-            resetPage()
-          }}
-          onToChange={(v) => {
-            setDateTo(v)
-            resetPage()
-          }}
+          onFromChange={(v) => setParam('dateFrom', v || undefined)}
+          onToChange={(v) => setParam('dateTo', v || undefined)}
         />
+        <Button type="button" variant="ghost" size="sm" onClick={clearFilters}>
+          {t('common:actions.clearFilters')}
+        </Button>
       </div>
 
       {isAdmin && selected.length > 0 ? (
@@ -218,7 +287,7 @@ export function RequestListPage() {
                 {rows.map((r) => (
                   <TableRow
                     key={r.id}
-                    className="cursor-pointer"
+                    interactive
                     data-state={selected.includes(r.id) ? 'selected' : undefined}
                     onClick={() => navigate(`/requests/${r.id}`)}
                   >
@@ -240,8 +309,14 @@ export function RequestListPage() {
                       <StatusBadge status={r.status} />
                     </TableCell>
                     {isAdmin ? (
-                      <TableCell>
-                        {r.applicant.name} {r.applicant.surname}
+                      <TableCell onClick={(e) => e.stopPropagation()}>
+                        <button
+                          type="button"
+                          className={cn('text-left text-primary', interactiveTextLink)}
+                          onClick={() => setApplicantId(r.applicantId)}
+                        >
+                          {r.applicant.name} {r.applicant.surname}
+                        </button>
                       </TableCell>
                     ) : null}
                     <TableCell>{formatDateTime(r.createdDate, i18n.language)}</TableCell>
@@ -256,7 +331,7 @@ export function RequestListPage() {
               <Link
                 key={r.id}
                 to={`/requests/${r.id}`}
-                className="block rounded-lg border border-border bg-card p-4"
+                className={cn('block rounded-lg border border-border bg-card p-4 shadow-sm', interactiveCard)}
               >
                 <div className="flex items-start justify-between gap-2">
                   <p className="font-medium">{r.title}</p>
@@ -283,17 +358,3 @@ export function RequestListPage() {
   )
 }
 
-function statusKey(status: RequestStatus) {
-  switch (status) {
-    case RequestStatus.NEW:
-      return 'new'
-    case RequestStatus.IN_REVIEW:
-      return 'inReview'
-    case RequestStatus.APPROVED:
-      return 'approved'
-    case RequestStatus.REJECTED:
-      return 'rejected'
-    case RequestStatus.CANCELLED:
-      return 'cancelled'
-  }
-}

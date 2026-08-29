@@ -1,4 +1,4 @@
-import type { FormType, RequestStatus } from './enums'
+import type { Department, FormType, RequestStatus } from './enums'
 import type { AttachmentResponse } from './file.types'
 import type { UserResponse } from './user.types'
 
@@ -10,14 +10,15 @@ export interface TimelineEntry {
 }
 
 export interface ApplicationResponse {
-  id: number
+  id: string
   title: string
   description: string
   formType: FormType
   formTypeName: string
   status: RequestStatus
   applicant: UserResponse
-  applicantId: number
+  applicantId: string
+  tenantId: string
   createdDate: string
   updatedDate: string
   attachments?: AttachmentResponse[]
@@ -46,22 +47,30 @@ export interface RequestListParams {
   dateFrom?: string
   dateTo?: string
   keyword?: string
+  applicantId?: string
+  /** Filters by the applicant's department. */
+  department?: Department[]
+  /** Only requests that do (or do not) have at least one attachment. */
+  hasAttachments?: boolean
+  /** Only requests untouched since this ISO timestamp — powers "overdue" filters. */
+  updatedBefore?: string
 }
 
 export interface RequestEntity {
-  id: number
+  id: string
   title: string
   description: string
   formType: FormType
   status: RequestStatus
-  applicantId: number
+  applicantId: string
+  tenantId: string
   createdDate: string
   updatedDate: string
   timeline: TimelineEntry[]
 }
 
 export interface FormTypeEntity {
-  id: number
+  id: string
   code: FormType
   name: string
 }
@@ -79,6 +88,13 @@ export interface DashboardResponse {
   todayRequests: number
   recentRequests: ApplicationResponse[]
   statusDistribution: StatusDistribution[]
+  weeklyTrend: WeeklyTrendPoint[]
+  overduePendingCount: number
+}
+
+export interface WeeklyTrendPoint {
+  date: string
+  count: number
 }
 
 export type DashboardStatsResponse = DashboardResponse

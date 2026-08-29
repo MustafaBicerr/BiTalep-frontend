@@ -3,6 +3,7 @@ import * as React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/utils/cn'
+import { interactiveIcon } from '@/utils/interactive'
 
 interface SearchInputProps {
   value: string
@@ -45,7 +46,7 @@ export function SearchInput({
       {local ? (
         <button
           type="button"
-          className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:text-foreground"
+          className={cn('absolute right-2 top-1/2 -translate-y-1/2 p-1 text-muted-foreground', interactiveIcon)}
           onClick={() => {
             setLocal('')
             onChange('')

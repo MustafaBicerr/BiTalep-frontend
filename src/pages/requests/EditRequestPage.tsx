@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { toast } from 'sonner'
 import { FormField } from '@/components/molecules/FormField'
+import { FormPageSkeleton } from '@/components/molecules/SkeletonTemplates'
 import { Spinner } from '@/components/atoms/Spinner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -22,7 +23,7 @@ import { FormType, RequestStatus } from '@/types/enums'
 
 export function EditRequestPage() {
   const { id } = useParams()
-  const requestId = Number(id)
+  const requestId = id ?? ''
   const { t } = useTranslation(['requests', 'forms', 'common'])
   const navigate = useNavigate()
   const { data, isLoading } = useRequest(requestId)
@@ -55,11 +56,7 @@ export function EditRequestPage() {
   }, [data, form, navigate, requestId, t])
 
   if (isLoading || !data) {
-    return (
-      <div className="flex justify-center py-16">
-        <Spinner />
-      </div>
-    )
+    return <FormPageSkeleton fields={3} />
   }
 
   const onSubmit = form.handleSubmit(async (values) => {

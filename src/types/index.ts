@@ -10,9 +10,11 @@ export type { LoginRequest, RegisterRequest, LoginResponse } from './auth.types'
 export type {
   UserResponse,
   UpdateProfileRequest,
+  CreateUserRequest,
   UserListParams,
   UserEntity,
 } from './user.types'
+export type { CompanyResponse, CompanyEntity, SubscriptionPlan } from './company.types'
 export type {
   ApplicationResponse,
   CreateApplicationRequest,
@@ -24,6 +26,7 @@ export type {
   DashboardResponse,
   DashboardStatsResponse,
   StatusDistribution,
+  WeeklyTrendPoint,
 } from './request.types'
 export type {
   NotificationResponse,

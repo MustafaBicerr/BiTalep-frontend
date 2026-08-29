@@ -6,7 +6,7 @@ import type {
 
 export interface INotificationRepository {
   list(params?: NotificationListParams): Promise<PaginatedResponse<NotificationResponse>>
-  markRead(id: number): Promise<void>
+  markRead(id: string): Promise<void>
   markAllRead(): Promise<void>
   getUnreadCount(): Promise<ApiSuccessResponse<{ count: number }>>
 }

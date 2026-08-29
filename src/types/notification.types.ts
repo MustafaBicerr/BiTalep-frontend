@@ -2,13 +2,13 @@ import type { NotificationType } from './enums'
 import type { UserResponse } from './user.types'
 
 export interface NotificationResponse {
-  id: number
+  id: string
   type: NotificationType
   title: string
   description: string
   isRead: boolean
   createdDate: string
-  relatedRequestId?: number
+  relatedRequestId?: string
   actor?: UserResponse
 }
 
@@ -18,13 +18,14 @@ export interface NotificationListParams {
 }
 
 export interface NotificationEntity {
-  id: number
+  id: string
   type: NotificationType
   title: string
   description: string
   isRead: boolean
   createdDate: string
-  relatedRequestId?: number
-  actorId?: number
-  recipientId: number
+  relatedRequestId?: string
+  actorId?: string
+  recipientId: string
+  tenantId: string
 }

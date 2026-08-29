@@ -44,5 +44,35 @@
   "bulkReject": "Reject selected",
   "selectedCount": "{{count}} selected",
   "timeline": "Timeline",
-  "cannotEdit": "Only new requests can be edited."
+  "cannotEdit": "Only new requests can be edited.",
+  "listSortLabel": "Sort",
+  "listSort": {
+    "newest": "Created: newest first",
+    "oldest": "Created: oldest first",
+    "updated": "Recently updated",
+    "status": "By status",
+    "type": "By type"
+  },
+  "explorer": {
+    "description": "Click a row to expand the request; filters stay free to change.",
+    "total": "{{count}} records",
+    "shown": "Showing {{count}} of {{total}}",
+    "allStatuses": "All statuses",
+    "allTypes": "All types",
+    "breakdown": "Type breakdown",
+    "sortLabel": "Sort",
+    "sort": {
+      "newest": "Newest first",
+      "oldest": "Oldest first",
+      "updated": "Recently updated",
+      "status": "By status"
+    },
+    "lastUpdate": "Last update",
+    "attachments": "{{count}} attachment(s)",
+    "noAttachments": "No attachments",
+    "startReview": "Start review",
+    "reviewStarted": "Request moved to review",
+    "detail": "Detail",
+    "openInList": "Open filtered list"
+  }
 }

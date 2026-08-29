@@ -44,5 +44,35 @@
   "bulkReject": "Seçilenleri reddet",
   "selectedCount": "{{count}} seçili",
   "timeline": "Zaman çizelgesi",
-  "cannotEdit": "Yalnızca yeni talepler düzenlenebilir."
+  "cannotEdit": "Yalnızca yeni talepler düzenlenebilir.",
+  "listSortLabel": "Sıralama",
+  "listSort": {
+    "newest": "Oluşturma: yeni → eski",
+    "oldest": "Oluşturma: eski → yeni",
+    "updated": "Son güncellenen",
+    "status": "Duruma göre",
+    "type": "Türe göre"
+  },
+  "explorer": {
+    "description": "Satıra tıklayarak talebi genişletin, filtreleri serbestçe değiştirin.",
+    "total": "{{count}} kayıt",
+    "shown": "{{count}} / {{total}} kayıt görüntülendi",
+    "allStatuses": "Tüm durumlar",
+    "allTypes": "Tüm türler",
+    "breakdown": "Tür kırılımı",
+    "sortLabel": "Sıralama",
+    "sort": {
+      "newest": "Yeni → Eski",
+      "oldest": "Eski → Yeni",
+      "updated": "Son güncellenen",
+      "status": "Duruma göre"
+    },
+    "lastUpdate": "Son güncelleme",
+    "attachments": "{{count}} ek",
+    "noAttachments": "Ek yok",
+    "startReview": "İncelemeye al",
+    "reviewStarted": "Talep incelemeye alındı",
+    "detail": "Detay",
+    "openInList": "Listede filtreli aç"
+  }
 }

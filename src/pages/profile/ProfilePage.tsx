@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useProfile, useUpdateProfile } from '@/hooks/useAuth'
 import { formatDate } from '@/utils/formatDate'
-import { Spinner } from '@/components/atoms/Spinner'
+import { FormPageSkeleton } from '@/components/molecules/SkeletonTemplates'
 
 export function ProfilePage() {
   const { t, i18n } = useTranslation(['profile', 'common'])
@@ -22,11 +22,7 @@ export function ProfilePage() {
   })
 
   if (isLoading || !data) {
-    return (
-      <div className="flex justify-center py-16">
-        <Spinner />
-      </div>
-    )
+    return <FormPageSkeleton fields={2} />
   }
 
   return (

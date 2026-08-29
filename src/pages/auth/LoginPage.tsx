@@ -14,6 +14,8 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useLogin } from '@/hooks/useAuth'
+import { cn } from '@/utils/cn'
+import { interactiveIcon, interactiveTextLink } from '@/utils/interactive'
 
 const schema = z.object({
   email: z.string().min(1).email(),
@@ -83,7 +85,7 @@ export function LoginPage() {
               />
               <button
                 type="button"
-                className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground"
+                className={cn('absolute right-2 top-1/2 -translate-y-1/2 p-1 text-muted-foreground', interactiveIcon)}
                 onClick={() => setShowPassword((v) => !v)}
                 aria-label={showPassword ? t('auth.login.hidePassword') : t('auth.login.showPassword')}
               >
@@ -93,7 +95,7 @@ export function LoginPage() {
             <div className="flex justify-end">
               <button
                 type="button"
-                className="text-xs text-primary hover:underline"
+                className={cn('text-xs text-primary', interactiveTextLink)}
                 onClick={() => toast.info(t('toast.info.forgotPassword'))}
               >
                 {t('auth.login.forgotPassword')}
@@ -120,7 +122,7 @@ export function LoginPage() {
 
         <p className="mt-6 text-center text-sm text-muted-foreground">
           {t('auth.login.noAccount')}{' '}
-          <Link to="/register" className="text-primary hover:underline">
+          <Link to="/register" className={cn('text-primary', interactiveTextLink)}>
             {t('auth.login.registerLink')}
           </Link>
         </p>

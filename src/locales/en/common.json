@@ -24,6 +24,17 @@
     "admin": "Admin",
     "employee": "Employee"
   },
+  "department": {
+    "label": "Department",
+    "all": "All departments",
+    "HR": "Human Resources",
+    "IT": "Information Technology",
+    "FINANCE": "Finance",
+    "SALES": "Sales",
+    "OPERATIONS": "Operations",
+    "MARKETING": "Marketing",
+    "OTHER": "Other"
+  },
   "theme": {
     "switchToLight": "Switch to light theme",
     "switchToDark": "Switch to dark theme",
@@ -34,7 +45,9 @@
   "language": {
     "label": "Language",
     "tr": "Türkçe",
-    "en": "English"
+    "en": "English",
+    "trShort": "TR",
+    "enShort": "EN"
   },
   "search": {
     "placeholder": "Search…",
@@ -42,9 +55,14 @@
     "recent": "Recent searches",
     "pages": "Pages",
     "requests": "Requests",
-    "users": "Users",
+    "users": "Personnel",
     "noResults": "No results",
     "minChars": "Enter at least 2 characters"
+  },
+  "infinite": {
+    "loadingMore": "Loading more records",
+    "capReached": "Showing the first {{count}} records",
+    "viewAll": "See all in the list"
   },
   "pagination": {
     "range": "{{from}}–{{to}} / {{total}} records",
@@ -59,6 +77,8 @@
     "status": "Status",
     "formType": "Request type",
     "keyword": "Keyword",
+    "applicant": "Applicant",
+    "applicantSearch": "Search person…",
     "open": "Filter",
     "active": "Active filters",
     "remove": "Remove {{label}} filter"
@@ -84,9 +104,9 @@
       "action": "Clear filters"
     },
     "noUsers": {
-      "title": "No users found",
-      "description": "There are no registered users.",
-      "action": "Add user"
+      "title": "No personnel found",
+      "description": "There are no registered personnel.",
+      "action": "Add personnel"
     }
   },
   "toast": {
@@ -158,7 +178,7 @@
     "bulkApprove": "Bulk approve",
     "bulkReject": "Bulk reject",
     "users": {
-      "title": "User management",
+      "title": "Personnel management",
       "name": "Full name",
       "email": "Email",
       "role": "Role",
@@ -168,12 +188,84 @@
     }
   },
   "users": {
-    "title": "User management",
+    "title": "Personnel management",
     "name": "Full name",
+    "firstName": "First name",
+    "lastName": "Last name",
     "email": "Email",
     "role": "Role",
+    "department": "Department",
     "createdAt": "Created at",
     "actions": "Actions",
-    "changeRole": "Change role"
+    "changeRole": "Change role",
+    "roleConfirmTitle": "Change role",
+    "roleConfirmDescription": "This person’s role will be updated to {{role}}.",
+    "backToList": "Personnel list",
+    "copyEmail": "Copy email",
+    "filterRequests": "Filter their requests",
+    "pastRequests": "Past requests",
+    "noRequests": "This person has no requests",
+    "add": "Add personnel",
+    "addTitle": "New personnel",
+    "addDescription": "Enter first name, last name, email, role and department. The password is not set here; it is sent by email.",
+    "metrics": {
+      "total": "Total",
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "import": {
+      "template": "Download sample template",
+      "upload": "Upload from Excel",
+      "filename": "bitalep-personnel-template.xlsx",
+      "sheetData": "Personnel",
+      "sheetGuide": "Guide",
+      "colName": "First name",
+      "colSurname": "Last name",
+      "colEmail": "Email",
+      "colRole": "Role",
+      "colDepartment": "Department",
+      "guideField": "Field",
+      "guideCode": "Code",
+      "guideLabel": "Label",
+      "stage": {
+        "reading": "Reading Excel data",
+        "read": "Data received",
+        "processing": "Processing data",
+        "processed": "Data processed",
+        "done": "Upload complete"
+      },
+      "percent": "{{percent}}%",
+      "errorsTitle": "Row errors",
+      "rowError": "Row {{row}}: {{message}}",
+      "missingFields": "Required fields are missing",
+      "invalidRole": "Invalid role value",
+      "invalidDepartment": "Invalid department value",
+      "emailInvalid": "Invalid email format",
+      "emailTaken": "This email is already registered",
+      "emptyFile": "The Excel file has no personnel rows",
+      "summaryOk": "{{count}} personnel added",
+      "summaryFail": "{{count}} rows skipped"
+    },
+    "invite": {
+      "notice": "Account passwords will be sent to the email address you provide.",
+      "sent": "Invitation email sent",
+      "sentMany": "{{count}} invitation emails sent",
+      "previewTitle": "Email sent",
+      "previewDescription": "A branded invitation was sent to {{email}}.",
+      "copyPassword": "Copy password",
+      "copied": "Password copied",
+      "subject": "Your BiTalep account is ready",
+      "preheader": "Your temporary password is in this email. Change it after you sign in.",
+      "greeting": "Hello {{name}},",
+      "intro": "An account was created for you on the BiTalep panel. You can sign in with the temporary password below.",
+      "passwordLabel": "Your temporary password",
+      "copyHint": "You can select and copy the password.",
+      "warningTitle": "Important:",
+      "warning": "Do not share this password with anyone.",
+      "recommend": "After signing in, we recommend changing your password on the Settings page.",
+      "cta": "Sign in to the panel",
+      "footer": "This message was sent by BiTalep because an account was created for you."
+    }
   }
 }

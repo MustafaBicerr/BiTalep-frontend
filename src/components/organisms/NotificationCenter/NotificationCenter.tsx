@@ -10,7 +10,7 @@ import {
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { EmptyState } from '@/components/molecules/EmptyState'
-import { Spinner } from '@/components/atoms/Spinner'
+import { TableRowSkeleton } from '@/components/molecules/SkeletonTemplates'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import {
@@ -24,6 +24,7 @@ import { useUiStore } from '@/stores/uiStore'
 import { NotificationType } from '@/types/enums'
 import { formatRelative } from '@/utils/formatDate'
 import { cn } from '@/utils/cn'
+import { interactiveRow } from '@/utils/interactive'
 
 const TYPE_ICONS: Record<NotificationType, LucideIcon> = {
   [NotificationType.STATUS_CHANGE]: RefreshCw,
@@ -65,8 +66,10 @@ export function NotificationCenter() {
 
         <ScrollArea className="flex-1">
           {isLoading ? (
-            <div className="flex justify-center py-12">
-              <Spinner />
+            <div className="px-2 py-2" aria-busy="true">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <TableRowSkeleton key={i} cols={3} />
+              ))}
             </div>
           ) : rows.length === 0 ? (
             <EmptyState preset="noNotifications" className="min-h-[240px]" />
@@ -79,8 +82,9 @@ export function NotificationCenter() {
                     <Link
                       to={n.relatedRequestId ? `/requests/${n.relatedRequestId}` : '/notifications'}
                       className={cn(
-                        'relative flex min-h-16 gap-3 px-4 py-3 hover:bg-muted/50',
-                        !n.isRead && 'bg-primary-subtle',
+                        'relative flex min-h-16 gap-3 px-4 py-3',
+                        interactiveRow,
+                        !n.isRead && 'bg-primary-subtle hover:bg-primary-subtle/70',
                       )}
                       onClick={() => {
                         if (!n.isRead) void markRead.mutateAsync(n.id)

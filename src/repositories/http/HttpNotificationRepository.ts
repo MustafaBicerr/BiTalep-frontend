@@ -15,7 +15,7 @@ export class HttpNotificationRepository implements INotificationRepository {
     return data
   }
 
-  async markRead(id: number): Promise<void> {
+  async markRead(id: string): Promise<void> {
     await api.put(`/api/notifications/${id}/read`)
   }
 

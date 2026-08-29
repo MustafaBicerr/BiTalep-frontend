@@ -1,5 +1,22 @@
 import { FormType, RequestStatus } from '@/types/enums'
 import type { RequestEntity } from '@/types/request.types'
+import { DEMO_TENANT_ID, requestId, userId } from '@/lib/ids'
+import { createRng } from './rng'
+import { employeeSeedNs } from './users.seed'
+
+type DraftRequest = Omit<RequestEntity, 'id' | 'applicantId' | 'tenantId'> & {
+  id: number
+  applicantId: number
+}
+
+function toEntities(drafts: DraftRequest[]): RequestEntity[] {
+  return drafts.map((item) => ({
+    ...item,
+    id: requestId(item.id),
+    applicantId: userId(item.applicantId),
+    tenantId: DEMO_TENANT_ID,
+  }))
+}
 
 function daysAgo(days: number, hour = 10): string {
   const d = new Date()
@@ -8,9 +25,15 @@ function daysAgo(days: number, hour = 10): string {
   return d.toISOString()
 }
 
+/** First generated id; ids 1-15 stay reserved for the hand-written demo records. */
+const GENERATED_FROM_ID = 16
+const GENERATED_COUNT = 205
+/** Fixed seed — the dataset must be identical on every reload. */
+const REQUEST_SEED = 20_260_829
+
 /**
- * 15 requests — NEW3 / IN_REVIEW4 / APPROVED4 / REJECTED2 / CANCELLED2
- * Date mix: 3 today, 5 this week, 7 older. All form types covered.
+ * ~220 requests: 15 hand-written demo records with a curated status mix,
+ * plus a deterministic generator for lazy-loading and report depth.
  */
 export function createRequestsSeed(): RequestEntity[] {
   const today0 = daysAgo(0, 9)
@@ -31,7 +54,7 @@ export function createRequestsSeed(): RequestEntity[] {
   const old6 = daysAgo(45, 10)
   const old7 = daysAgo(50, 8)
 
-  return [
+  return toEntities([
     {
       id: 1,
       title: 'Yıllık izin talebi',
@@ -311,5 +334,192 @@ export function createRequestsSeed(): RequestEntity[] {
         },
       ],
     },
-  ]
+    ...generatedRequests(),
+  ])
+}
+
+// ─── Deterministic generator ──────────────────────────────────────────
+
+const FORM_TYPES = [
+  FormType.LEAVE,
+  FormType.TRAINING,
+  FormType.ADVANCE,
+  FormType.MATERIAL,
+  FormType.TASK,
+] as const
+/** Leave and material dominate real request traffic. */
+const FORM_TYPE_WEIGHTS = [30, 16, 14, 22, 18] as const
+
+const STATUSES = [
+  RequestStatus.NEW,
+  RequestStatus.IN_REVIEW,
+  RequestStatus.APPROVED,
+  RequestStatus.REJECTED,
+  RequestStatus.CANCELLED,
+] as const
+const STATUS_WEIGHTS = [16, 20, 42, 14, 8] as const
+
+const SUBJECTS: Record<FormType, readonly string[]> = {
+  [FormType.LEAVE]: [
+    'Yıllık izin',
+    'Mazeret izni',
+    'Hastalık izni',
+    'Babalık izni',
+    'Doğum izni',
+    'Ücretsiz izin',
+    'Yarım gün izin',
+    'Evlilik izni',
+  ],
+  [FormType.TRAINING]: [
+    'TypeScript eğitimi',
+    'Liderlik eğitimi',
+    'Bilgi güvenliği eğitimi',
+    'Veri analizi eğitimi',
+    'Agile workshop',
+    'Sunum teknikleri eğitimi',
+    'Bulut sertifikasyonu',
+    'İngilizce kursu',
+  ],
+  [FormType.ADVANCE]: [
+    'Maaş avansı',
+    'Seyahat avansı',
+    'Eğitim avansı',
+    'Sağlık gideri avansı',
+    'Taşınma avansı',
+    'Konferans avansı',
+  ],
+  [FormType.MATERIAL]: [
+    'Monitör',
+    'Klavye ve mouse',
+    'Kulaklık',
+    'Yükseklik ayarlı masa',
+    'Dizüstü bilgisayar',
+    'Ofis sarf malzemesi',
+    'Yazıcı toneri',
+    'Webcam',
+  ],
+  [FormType.TASK]: [
+    'Raporlama görevi',
+    'Mentorluk görevi',
+    'Dokümantasyon görevi',
+    'Denetim hazırlık görevi',
+    'Envanter sayım görevi',
+    'Release destek görevi',
+  ],
+}
+
+const REASONS: readonly string[] = [
+  'Ekip planlaması onaylandıktan sonra ilerlenecek.',
+  'İlgili yönetici ile ön görüşme yapıldı.',
+  'Bütçe kalemi cari dönem içinde ayrıldı.',
+  'Süreç adımları için ek belge eklenmiştir.',
+  'Yerine görevlendirme planı hazırlanmıştır.',
+  'Talep, dönem içi hedeflerle uyumludur.',
+]
+
+/** Keeps timeline dates monotonic when two steps land on the same day. */
+function laterOf(a: string, b: string): string {
+  return a > b ? a : b
+}
+
+const REJECTION_REASONS: readonly string[] = [
+  'Bütçe yetersizliği nedeniyle reddedildi',
+  'Politika kapsamı dışında',
+  'Aynı dönemde alternatif talep onaylandı',
+  'Eksik belge tamamlanmadı',
+]
+
+function titleFor(formType: FormType, subject: string, rng: ReturnType<typeof createRng>): string {
+  switch (formType) {
+    case FormType.LEAVE:
+      return `${subject} talebi (${rng.pick([1, 2, 3, 5, 7, 10, 14])} gün)`
+    case FormType.TRAINING:
+      return `${subject} katılım talebi`
+    case FormType.ADVANCE:
+      return `${subject} talebi`
+    case FormType.MATERIAL:
+      return `${subject} temin talebi`
+    case FormType.TASK:
+      return `${subject} atama talebi`
+  }
+}
+
+/**
+ * Builds 205 records spread over the last 120 days with a realistic status and
+ * department mix. Uses a fixed LCG seed, never Math.random.
+ */
+function generatedRequests(): DraftRequest[] {
+  const rng = createRng(REQUEST_SEED)
+  const items: DraftRequest[] = []
+
+  for (let i = 0; i < GENERATED_COUNT; i++) {
+    const formType = FORM_TYPES[rng.weighted(FORM_TYPE_WEIGHTS)]
+    const status = STATUSES[rng.weighted(STATUS_WEIGHTS)]
+    const applicantId = rng.pick(employeeSeedNs)
+    const subject = rng.pick(SUBJECTS[formType])
+
+    // Recent days are denser so the dashboard and "this week" chips stay lively.
+    const bucket = rng.weighted([26, 22, 18, 20, 14])
+    const createdDaysAgo = [
+      rng.int(0, 6),
+      rng.int(7, 20),
+      rng.int(21, 45),
+      rng.int(46, 85),
+      rng.int(86, 120),
+    ][bucket]
+    const createdHour = rng.int(8, 18)
+    const createdDate = daysAgo(createdDaysAgo, createdHour)
+
+    const reviewLag = Math.min(createdDaysAgo, rng.int(1, 4))
+    const reviewDaysAgo = createdDaysAgo - reviewLag
+    const resolveDaysAgo = Math.max(0, reviewDaysAgo - Math.min(reviewDaysAgo, rng.int(1, 5)))
+
+    const timeline: RequestEntity['timeline'] = [
+      { status: RequestStatus.NEW, date: createdDate, description: 'Talep oluşturuldu' },
+    ]
+    let updatedDate = createdDate
+
+    if (status === RequestStatus.CANCELLED) {
+      updatedDate = laterOf(createdDate, daysAgo(reviewDaysAgo, rng.int(9, 17)))
+      timeline.push({
+        status: RequestStatus.CANCELLED,
+        date: updatedDate,
+        description: 'Başvuran tarafından iptal edildi',
+      })
+    } else if (status !== RequestStatus.NEW) {
+      const reviewDate = laterOf(createdDate, daysAgo(reviewDaysAgo, rng.int(9, 16)))
+      timeline.push({
+        status: RequestStatus.IN_REVIEW,
+        date: reviewDate,
+        description: 'İncelemeye alındı',
+      })
+      updatedDate = reviewDate
+
+      if (status === RequestStatus.APPROVED || status === RequestStatus.REJECTED) {
+        updatedDate = laterOf(reviewDate, daysAgo(resolveDaysAgo, rng.int(10, 18)))
+        timeline.push({
+          status,
+          date: updatedDate,
+          description:
+            status === RequestStatus.APPROVED
+              ? 'Talep onaylandı'
+              : rng.pick(REJECTION_REASONS),
+        })
+      }
+    }
+
+    items.push({
+      id: GENERATED_FROM_ID + i,
+      title: titleFor(formType, subject, rng),
+      description: `${subject} için talep oluşturulmuştur. ${rng.pick(REASONS)}`,
+      formType,
+      status,
+      applicantId,
+      createdDate,
+      updatedDate,
+      timeline,
+    })
+  }
+
+  return items
 }

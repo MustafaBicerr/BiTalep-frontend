@@ -1,0 +1,1 @@
+export { DepartmentBadge } from './DepartmentBadge'

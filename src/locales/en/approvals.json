@@ -1,0 +1,18 @@
+{
+  "title": "Approval queue",
+  "tabInReview": "In review",
+  "tabNew": "New",
+  "waitingDays": "Waiting {{count}} days",
+  "emptyTitle": "No pending approvals",
+  "emptyDescription": "There are no requests waiting for approval.",
+  "viewAll": "All requests",
+  "open": "Open",
+  "chipOverdue": "Overdue (3+ days)",
+  "sortLabel": "Sort",
+  "sort": {
+    "waiting": "Waiting time",
+    "newest": "Created: newest first",
+    "oldest": "Created: oldest first",
+    "type": "By type"
+  }
+}

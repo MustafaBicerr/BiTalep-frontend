@@ -19,5 +19,7 @@
     "description": "An unexpected error occurred. Please try again later.",
     "primary": "Go to dashboard",
     "secondary": "Retry"
-  }
+  },
+  "emailTaken": "This email address is already registered",
+  "conflict": "This action is not allowed in the current state."
 }

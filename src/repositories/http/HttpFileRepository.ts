@@ -4,7 +4,7 @@ import type { ApiSuccessResponse } from '@/types/api.types'
 import type { AttachmentResponse } from '@/types/file.types'
 
 export class HttpFileRepository implements IFileRepository {
-  async upload(file: File, applicationId: number) {
+  async upload(file: File, applicationId: string) {
     const formData = new FormData()
     formData.append('file', file)
     formData.append('applicationId', String(applicationId))
@@ -16,18 +16,18 @@ export class HttpFileRepository implements IFileRepository {
     return data
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: string): Promise<void> {
     await api.delete(`/api/files/${id}`)
   }
 
-  async getById(id: number) {
+  async getById(id: string) {
     const { data } = await api.get<ApiSuccessResponse<AttachmentResponse>>(
       `/api/files/${id}`,
     )
     return data
   }
 
-  async listByRequest(applicationId: number) {
+  async listByRequest(applicationId: string) {
     const { data } = await api.get<ApiSuccessResponse<AttachmentResponse[]>>(
       `/api/forms/${applicationId}/files`,
     )
