@@ -1,5 +1,5 @@
 import { repositories } from '@/repositories'
-import type { LoginRequest, RegisterRequest } from '@/types/auth.types'
+import type { ForgotPasswordRequest, LoginRequest, RegisterRequest, ResetPasswordRequest } from '@/types/auth.types'
 
 export const authService = {
   login: async (request: LoginRequest) => {
@@ -10,16 +10,21 @@ export const authService = {
     const res = await repositories.auth.register(request)
     return res.data
   },
-  logout: async () => {
-    await repositories.auth.logout()
+  logout: async (refreshToken?: string | null) => {
+    await repositories.auth.logout(refreshToken)
   },
   getCurrentUser: async () => {
     const res = await repositories.auth.getCurrentUser()
     return res.data
   },
-  /** Alias used by some hooks */
   me: async () => {
     const res = await repositories.auth.getCurrentUser()
     return res.data
+  },
+  forgotPassword: async (request: ForgotPasswordRequest) => {
+    await repositories.auth.forgotPassword(request)
+  },
+  resetPassword: async (request: ResetPasswordRequest) => {
+    await repositories.auth.resetPassword(request)
   },
 }

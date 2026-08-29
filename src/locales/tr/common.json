@@ -170,6 +170,18 @@
       "submit": "Kayıt ol",
       "hasAccount": "Zaten hesabınız var mı?",
       "loginLink": "Giriş yapın"
+    },
+    "forgot": {
+      "title": "Şifremi unuttum",
+      "subtitle": "E-posta adresinizi girin, sıfırlama bağlantısı gönderelim.",
+      "submit": "Bağlantı gönder",
+      "sent": "Eğer bu e-posta kayıtlıysa sıfırlama bağlantısı gönderildi."
+    },
+    "reset": {
+      "title": "Yeni şifre",
+      "subtitle": "Hesabınız için yeni bir şifre belirleyin.",
+      "submit": "Şifreyi güncelle",
+      "success": "Şifreniz güncellendi. Giriş yapabilirsiniz."
     }
   },
   "admin": {

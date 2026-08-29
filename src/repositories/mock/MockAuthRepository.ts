@@ -19,6 +19,7 @@ export class MockAuthRepository implements IAuthRepository {
     const token = mockStore.createSession(user.id)
     const data: LoginResponse = {
       token,
+      refreshToken: `mock-refresh-${user.id}`,
       user: mockStore.toUserResponse(user),
     }
     return { data }
@@ -37,6 +38,7 @@ export class MockAuthRepository implements IAuthRepository {
     const token = mockStore.createSession(user.id)
     const data: LoginResponse = {
       token,
+      refreshToken: `mock-refresh-${user.id}`,
       user: mockStore.toUserResponse(user),
     }
     return { data }
@@ -54,5 +56,18 @@ export class MockAuthRepository implements IAuthRepository {
     const user = mockStore.requireCurrentUser()
     const data: UserResponse = mockStore.toUserResponse(user)
     return { data }
+  }
+
+  async refresh(refreshToken: string) {
+    await MockDelay.wait('fast')
+    return { data: { token: refreshToken.replace('refresh', 'access'), refreshToken } }
+  }
+
+  async forgotPassword(): Promise<void> {
+    await MockDelay.wait('fast')
+  }
+
+  async resetPassword(): Promise<void> {
+    await MockDelay.wait('fast')
   }
 }

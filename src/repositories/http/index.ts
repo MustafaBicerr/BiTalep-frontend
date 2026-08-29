@@ -24,12 +24,22 @@ export class HttpAuthRepository implements IAuthRepository {
     const { data } = await api.post('/api/auth/register', payload)
     return data
   }
-  async logout() {
-    /* client-side */
+  async logout(refreshToken?: string | null) {
+    await api.post('/api/auth/logout', { refreshToken: refreshToken ?? undefined })
   }
   async getCurrentUser() {
     const { data } = await api.get('/api/users/me')
     return data
+  }
+  async refresh(refreshToken: string) {
+    const { data } = await api.post('/api/auth/refresh', { refreshToken })
+    return data
+  }
+  async forgotPassword(payload: { email: string }) {
+    await api.post('/api/auth/forgot-password', payload)
+  }
+  async resetPassword(payload: { token: string; password: string }) {
+    await api.post('/api/auth/reset-password', payload)
   }
 }
 

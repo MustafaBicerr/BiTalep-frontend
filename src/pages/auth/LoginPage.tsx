@@ -93,13 +93,9 @@ export function LoginPage() {
               </button>
             </div>
             <div className="flex justify-end">
-              <button
-                type="button"
-                className={cn('text-xs text-primary', interactiveTextLink)}
-                onClick={() => toast.info(t('toast.info.forgotPassword'))}
-              >
-                {t('auth.login.forgotPassword')}
-              </button>
+          <Link to="/forgot-password" className={cn('text-xs text-primary', interactiveTextLink)}>
+            {t('auth.login.forgotPassword')}
+          </Link>
             </div>
           </div>
 

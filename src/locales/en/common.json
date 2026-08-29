@@ -170,6 +170,18 @@
       "submit": "Register",
       "hasAccount": "Already have an account?",
       "loginLink": "Sign in"
+    },
+    "forgot": {
+      "title": "Forgot password",
+      "subtitle": "Enter your email and we will send a reset link.",
+      "submit": "Send reset link",
+      "sent": "If that email is registered, a reset link was sent."
+    },
+    "reset": {
+      "title": "Set a new password",
+      "subtitle": "Choose a new password for your account.",
+      "submit": "Update password",
+      "success": "Your password was updated. You can sign in."
     }
   },
   "admin": {

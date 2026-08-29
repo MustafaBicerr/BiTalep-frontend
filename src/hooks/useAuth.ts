@@ -11,7 +11,7 @@ export function useLogin() {
   return useMutation({
     mutationFn: async (payload: LoginRequest) => {
       const data = await authService.login(payload)
-      setAuth(data.token, data.user)
+      setAuth(data.token, data.user, data.refreshToken)
       return data
     },
   })
@@ -22,7 +22,7 @@ export function useRegister() {
   return useMutation({
     mutationFn: async (payload: RegisterRequest) => {
       const data = await authService.register(payload)
-      setAuth(data.token, data.user)
+      setAuth(data.token, data.user, data.refreshToken)
       return data
     },
   })
@@ -43,7 +43,8 @@ export function useAuth() {
   })
 
   const logout = async () => {
-    await authService.logout()
+    const refreshToken = useAuthStore.getState().refreshToken
+    await authService.logout(refreshToken)
     clearAuth()
     qc.clear()
   }
