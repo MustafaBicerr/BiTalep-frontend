@@ -18,6 +18,7 @@ import {
   type FormType,
 } from '@/types/enums'
 import type { CompanyEntity } from '@/types/company.types'
+import { isPersonnelMutable } from '@/utils/requestAccess'
 import type { AttachmentEntity, AttachmentResponse } from '@/types/file.types'
 import type {
   NotificationEntity,
@@ -275,6 +276,7 @@ class MockStore {
     let items = [...this.users]
     const tenantId = this.getCurrentUser()?.tenantId ?? DEMO_TENANT_ID
     items = items.filter((u) => u.tenantId === tenantId)
+    items = items.filter((u) => u.active !== false)
 
     if (params.role) {
       items = items.filter((u) => u.role === params.role)
@@ -309,7 +311,7 @@ class MockStore {
 
   getUserById(id: string): UserResponse {
     const user = this.users.find((u) => u.id === id)
-    if (!user) throw new ApiError(404, 'NOT_FOUND', 'errors:notFound')
+    if (!user || user.active === false) throw new ApiError(404, 'NOT_FOUND', 'errors:notFound')
     return toUserResponse(user)
   }
 
@@ -342,6 +344,42 @@ class MockStore {
     return user
   }
 
+  registerAdmin(input: {
+    name: string
+    surname: string
+    email: string
+    password: string
+    companyName: string
+  }): UserEntity {
+    if (this.findUserByEmail(input.email)) {
+      throw new ApiError(409, 'CONFLICT', 'errors:conflict', [
+        { field: 'email', message: 'errors:emailTaken' },
+      ])
+    }
+    const tenantId = newUuid()
+    this.company = {
+      id: tenantId,
+      name: input.companyName.trim(),
+      plan: 'PRO',
+      createdDate: new Date().toISOString(),
+    }
+    const user: UserEntity = {
+      id: newUuid(),
+      name: input.name,
+      surname: input.surname,
+      email: input.email,
+      password: input.password,
+      role: UserRole.ADMIN,
+      department: Department.OTHER,
+      tenantId,
+      createdDate: new Date().toISOString(),
+      active: true,
+    }
+    this.users.push(user)
+    this.persist()
+    return user
+  }
+
   updateProfile(data: UpdateProfileRequest): UserResponse {
     const user = this.requireCurrentUser()
     user.name = data.name
@@ -354,6 +392,18 @@ class MockStore {
     const user = this.users.find((u) => u.id === id)
     if (!user) throw new ApiError(404, 'NOT_FOUND', 'errors:notFound')
     user.role = role
+    this.persist()
+    return toUserResponse(user)
+  }
+
+  setUserActive(id: string, active: boolean): UserResponse {
+    const current = this.requireCurrentUser()
+    if (current.id === id && !active) {
+      throw new ApiError(409, 'CONFLICT', 'errors:conflict')
+    }
+    const user = this.users.find((u) => u.id === id)
+    if (!user) throw new ApiError(404, 'NOT_FOUND', 'errors:notFound')
+    user.active = active
     this.persist()
     return toUserResponse(user)
   }
@@ -387,6 +437,8 @@ class MockStore {
       createdDate: entity.createdDate,
       updatedDate: entity.updatedDate,
       timeline: entity.timeline.map((entry) => ({ ...entry })),
+      updateReason: entity.updateReason,
+      rejectReason: entity.rejectReason,
     }
 
     if (options?.includeAttachments !== false) {
@@ -527,14 +579,34 @@ class MockStore {
     this.assertCanAccessRequest(entity)
 
     const user = this.requireCurrentUser()
-    if (user.role === UserRole.PERSONEL && entity.status !== RequestStatus.NEW) {
-      throw new ApiError(409, 'CONFLICT', 'errors:conflict')
+    if (user.role === UserRole.PERSONEL && !isPersonnelMutable(entity.status)) {
+      throw new ApiError(403, 'FORBIDDEN', 'errors:forbidden')
     }
 
     entity.title = data.title
     entity.description = data.description
     entity.formType = data.formType
     entity.updatedDate = new Date().toISOString()
+    if (user.role === UserRole.PERSONEL && entity.status === RequestStatus.NEEDS_UPDATE) {
+      entity.status = RequestStatus.IN_REVIEW
+      entity.updateReason = null
+      entity.timeline.push({
+        status: RequestStatus.IN_REVIEW,
+        date: entity.updatedDate,
+        actor: toUserResponse(user),
+        description: 'Güncelleme tamamlandı, yeniden incelemeye alındı',
+      })
+      for (const admin of this.users.filter((u) => u.role === UserRole.ADMIN && u.tenantId === user.tenantId)) {
+        this.createNotification({
+          type: NotificationType.STATUS_CHANGE,
+          title: 'Talep yeniden incelemeye alındı',
+          description: entity.title,
+          recipientId: admin.id,
+          relatedRequestId: entity.id,
+          actorId: user.id,
+        })
+      }
+    }
     this.persist()
     return this.mapRequest(entity)
   }
@@ -546,8 +618,8 @@ class MockStore {
     this.assertCanAccessRequest(entity)
 
     const user = this.requireCurrentUser()
-    if (user.role === UserRole.PERSONEL && entity.status !== RequestStatus.NEW) {
-      throw new ApiError(409, 'CONFLICT', 'errors:conflict')
+    if (user.role === UserRole.PERSONEL && !isPersonnelMutable(entity.status)) {
+      throw new ApiError(403, 'FORBIDDEN', 'errors:forbidden')
     }
 
     this.requests.splice(idx, 1)
@@ -587,7 +659,9 @@ class MockStore {
               ? 'Talep iptal edildi'
               : newStatus === RequestStatus.IN_REVIEW
                 ? 'İncelemeye alındı'
-                : 'Durum güncellendi'),
+                : newStatus === RequestStatus.NEEDS_UPDATE
+                  ? 'Güncelleme gerekiyor'
+                  : 'Durum güncellendi'),
     })
 
     let notifType = NotificationType.STATUS_CHANGE
@@ -611,6 +685,16 @@ class MockStore {
 
     this.persist()
     return this.mapRequest(entity)
+  }
+
+  requestNeedsUpdate(id: string, actorId: string, reason?: string): ApplicationResponse {
+    const entity = this.updateRequestStatus(id, RequestStatus.NEEDS_UPDATE, actorId, reason)
+    const found = this.requests.find((r) => r.id === id)
+    if (found) {
+      found.updateReason = reason ?? null
+      this.persist()
+    }
+    return found ? this.mapRequest(found) : entity
   }
 
   // ─── Attachments ────────────────────────────────────────────────
@@ -646,8 +730,11 @@ class MockStore {
   }
 
   uploadAttachment(file: File, applicationId: string): AttachmentResponse {
-    this.getRequestById(applicationId)
+    const request = this.getRequestById(applicationId)
     const user = this.requireCurrentUser()
+    if (user.role === UserRole.PERSONEL && !isPersonnelMutable(request.status)) {
+      throw new ApiError(403, 'FORBIDDEN', 'errors:forbidden')
+    }
     const now = new Date().toISOString()
     const id = newUuid()
     const entity: AttachmentEntity = {
@@ -818,7 +905,10 @@ class MockStore {
     return {
       totalRequests: items.length,
       pendingRequests: items.filter(
-        (r) => r.status === RequestStatus.NEW || r.status === RequestStatus.IN_REVIEW,
+        (r) =>
+          r.status === RequestStatus.NEW ||
+          r.status === RequestStatus.IN_REVIEW ||
+          r.status === RequestStatus.NEEDS_UPDATE,
       ).length,
       approvedRequests: items.filter((r) => r.status === RequestStatus.APPROVED).length,
       rejectedRequests: items.filter((r) => r.status === RequestStatus.REJECTED).length,

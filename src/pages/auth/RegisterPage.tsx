@@ -23,6 +23,7 @@ export function RegisterPage() {
     .object({
       name: z.string().min(1, t('forms:validation.required')),
       surname: z.string().min(1, t('forms:validation.required')),
+      companyName: z.string().min(1, t('forms:validation.required')).max(200),
       email: z.string().email(t('forms:validation.email')),
       password: z.string().min(8, t('forms:validation.minLength', { min: 8 })),
       confirmPassword: z.string().min(1),
@@ -36,7 +37,7 @@ export function RegisterPage() {
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { name: '', surname: '', email: '', password: '', confirmPassword: '' },
+    defaultValues: { name: '', surname: '', companyName: '', email: '', password: '', confirmPassword: '' },
   })
 
   const onSubmit = form.handleSubmit(async (values) => {
@@ -44,6 +45,7 @@ export function RegisterPage() {
       await registerMutation.mutateAsync({
         name: values.name,
         surname: values.surname,
+        companyName: values.companyName,
         email: values.email,
         password: values.password,
       })
@@ -67,6 +69,9 @@ export function RegisterPage() {
           </FormField>
           <FormField id="surname" label={t('common:auth.register.lastName')} required error={form.formState.errors.surname?.message}>
             <Input {...form.register('surname')} />
+          </FormField>
+          <FormField id="companyName" label={t('common:auth.register.companyName')} required error={form.formState.errors.companyName?.message}>
+            <Input autoComplete="organization" {...form.register('companyName')} />
           </FormField>
           <FormField id="email" label={t('common:auth.register.email')} required error={form.formState.errors.email?.message}>
             <Input type="email" autoComplete="email" {...form.register('email')} />

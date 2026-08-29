@@ -28,6 +28,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { useInfiniteRequests } from '@/hooks/useInfiniteRequests'
 import {
   useApproveRequest,
+  useNeedsUpdateRequest,
   useRejectRequest,
   useStartReview,
 } from '@/hooks/useRequests'
@@ -63,6 +64,7 @@ export function ApprovalsPage() {
   const [keyword, setKeyword] = useState('')
   const [approveId, setApproveId] = useState<string | null>(null)
   const [rejectId, setRejectId] = useState<string | null>(null)
+  const [needsUpdateId, setNeedsUpdateId] = useState<string | null>(null)
   const [reason, setReason] = useState('')
   const [scrollRoot, setScrollRoot] = useState<HTMLDivElement | null>(null)
 
@@ -88,6 +90,7 @@ export function ApprovalsPage() {
   const approve = useApproveRequest()
   const reject = useRejectRequest()
   const startReview = useStartReview()
+  const needsUpdate = useNeedsUpdateRequest()
   const rows = list.items
   const isInitial = list.isLoading && rows.length === 0
 
@@ -214,21 +217,43 @@ export function ApprovalsPage() {
                           >
                             {t('common:admin.reject')}
                           </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              setReason('')
+                              setNeedsUpdateId(r.id)
+                            }}
+                          >
+                            {t('requests:needsUpdateTitle')}
+                          </Button>
                         </>
                       ) : (
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          disabled={startReview.isPending}
-                          onClick={() =>
-                            void startReview
-                              .mutateAsync(r.id)
-                              .then(() => toast.success(t('requests:explorer.reviewStarted')))
-                              .catch(() => toast.error(t('common:toast.error.conflict')))
-                          }
-                        >
-                          {t('requests:explorer.startReview')}
-                        </Button>
+                        <>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            disabled={startReview.isPending}
+                            onClick={() =>
+                              void startReview
+                                .mutateAsync(r.id)
+                                .then(() => toast.success(t('requests:explorer.reviewStarted')))
+                                .catch(() => toast.error(t('common:toast.error.conflict')))
+                            }
+                          >
+                            {t('requests:explorer.startReview')}
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              setReason('')
+                              setNeedsUpdateId(r.id)
+                            }}
+                          >
+                            {t('requests:needsUpdateTitle')}
+                          </Button>
+                        </>
                       )}
                     </div>
                   </li>
@@ -309,6 +334,39 @@ export function ApprovalsPage() {
               }}
             >
               {t('common:admin.reject')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={needsUpdateId != null} onOpenChange={(o) => !o && setNeedsUpdateId(null)}>
+        <DialogContent className="max-w-[400px]">
+          <DialogHeader>
+            <DialogTitle>{t('requests:needsUpdateTitle')}</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">{t('requests:needsUpdateDescription')}</p>
+          <Textarea
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            placeholder={t('requests:needsUpdateReason')}
+          />
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setNeedsUpdateId(null)}>
+              {t('common:actions.cancel')}
+            </Button>
+            <Button
+              onClick={async () => {
+                if (needsUpdateId == null) return
+                try {
+                  await needsUpdate.mutateAsync({ id: needsUpdateId, reason })
+                  toast.success(t('common:toast.success.saved'))
+                  setNeedsUpdateId(null)
+                } catch {
+                  toast.error(t('common:toast.error.conflict'))
+                }
+              }}
+            >
+              {t('requests:needsUpdateTitle')}
             </Button>
           </DialogFooter>
         </DialogContent>

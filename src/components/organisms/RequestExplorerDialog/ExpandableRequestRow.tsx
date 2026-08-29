@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import {
   useApproveRequest,
+  useNeedsUpdateRequest,
   useRejectRequest,
   useStartReview,
 } from '@/hooks/useRequests'
@@ -40,16 +41,19 @@ export function ExpandableRequestRow({
   const startReview = useStartReview()
   const approve = useApproveRequest()
   const reject = useRejectRequest()
+  const needsUpdate = useNeedsUpdateRequest()
+  const [updating, setUpdating] = useState(false)
 
   const lastEntry = request.timeline?.[request.timeline.length - 1]
   const attachmentCount = request.attachments?.length ?? 0
-  const busy = startReview.isPending || approve.isPending || reject.isPending
+  const busy = startReview.isPending || approve.isPending || reject.isPending || needsUpdate.isPending
 
   const run = async (action: () => Promise<unknown>, successKey: string) => {
     try {
       await action()
       toast.success(t(successKey))
       setRejecting(false)
+      setUpdating(false)
       setReason('')
     } catch {
       toast.error(t('common:toast.error.conflict'))
@@ -123,32 +127,44 @@ export function ExpandableRequestRow({
             </div>
           </dl>
 
-          {rejecting ? (
+          {rejecting || updating ? (
             <div className="animate-expand-in space-y-2 rounded-md border border-border bg-card p-3">
-              <p className="text-sm font-medium">{t('requests:rejectTitle')}</p>
+              <p className="text-sm font-medium">
+                {updating ? t('requests:needsUpdateTitle') : t('requests:rejectTitle')}
+              </p>
               <Textarea
                 value={reason}
                 autoFocus
                 onChange={(e) => setReason(e.target.value)}
-                placeholder={t('requests:rejectReason')}
+                placeholder={updating ? t('requests:needsUpdateReason') : t('requests:rejectReason')}
                 rows={3}
               />
               <div className="flex justify-end gap-2">
-                <Button variant="outline" size="sm" onClick={() => setRejecting(false)}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setRejecting(false)
+                    setUpdating(false)
+                  }}
+                >
                   {t('common:actions.cancel')}
                 </Button>
                 <Button
-                  variant="destructive"
+                  variant={updating ? 'default' : 'destructive'}
                   size="sm"
                   disabled={busy}
                   onClick={() =>
                     void run(
-                      () => reject.mutateAsync({ id: request.id, reason }),
-                      'common:toast.success.rejected',
+                      () =>
+                        updating
+                          ? needsUpdate.mutateAsync({ id: request.id, reason })
+                          : reject.mutateAsync({ id: request.id, reason }),
+                      updating ? 'common:toast.success.saved' : 'common:toast.success.rejected',
                     )
                   }
                 >
-                  {t('common:admin.reject')}
+                  {updating ? t('requests:needsUpdateTitle') : t('common:admin.reject')}
                 </Button>
               </div>
             </div>
@@ -194,6 +210,20 @@ export function ExpandableRequestRow({
                     {t('common:admin.reject')}
                   </Button>
                 </>
+              ) : null}
+              {canModerate &&
+              (request.status === RequestStatus.NEW || request.status === RequestStatus.IN_REVIEW) ? (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  disabled={busy}
+                  onClick={() => {
+                    setReason('')
+                    setUpdating(true)
+                  }}
+                >
+                  {t('requests:needsUpdateTitle')}
+                </Button>
               ) : null}
               <Button variant="outline" size="sm" onClick={onOpenDetail}>
                 {t('requests:explorer.detail')}

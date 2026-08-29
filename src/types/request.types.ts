@@ -23,6 +23,8 @@ export interface ApplicationResponse {
   updatedDate: string
   attachments?: AttachmentResponse[]
   timeline?: TimelineEntry[]
+  rejectReason?: string | null
+  updateReason?: string | null
 }
 
 export interface CreateApplicationRequest {
@@ -67,6 +69,8 @@ export interface RequestEntity {
   createdDate: string
   updatedDate: string
   timeline: TimelineEntry[]
+  updateReason?: string | null
+  rejectReason?: string | null
 }
 
 export interface FormTypeEntity {

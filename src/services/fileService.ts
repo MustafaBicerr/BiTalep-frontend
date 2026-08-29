@@ -1,7 +1,10 @@
 import { repositories } from '@/repositories'
 
 export const fileService = {
-  list: async () => mockStoreListAll(),
+  list: async () => {
+    const res = await repositories.files.listAll()
+    return res.data
+  },
   upload: async (file: File, applicationId: string) => {
     const res = await repositories.files.upload(file, applicationId)
     return res.data
@@ -20,11 +23,4 @@ export const fileService = {
     const res = await repositories.files.listByRequest(applicationId)
     return res.data
   },
-}
-
-async function mockStoreListAll() {
-  const { mockStore } = await import('@/mock/store/MockStore')
-  const { MockDelay } = await import('@/mock/engine/MockDelay')
-  await MockDelay.wait('normal')
-  return mockStore.listAllAttachments()
 }

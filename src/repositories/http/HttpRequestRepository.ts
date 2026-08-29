@@ -64,4 +64,12 @@ export class HttpRequestRepository implements IRequestRepository {
     )
     return data
   }
+
+  async needsUpdate(id: string, reason?: string) {
+    const { data } = await api.put<ApiSuccessResponse<ApplicationResponse>>(
+      `/api/forms/${id}/needs-update`,
+      { reason },
+    )
+    return data
+  }
 }

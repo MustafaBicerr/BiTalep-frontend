@@ -33,4 +33,11 @@ export class HttpFileRepository implements IFileRepository {
     )
     return data
   }
+
+  async listAll() {
+    const { data } = await api.get<ApiSuccessResponse<AttachmentResponse[]>>('/api/files', {
+      params: { page: 1, pageSize: 100 },
+    })
+    return data
+  }
 }

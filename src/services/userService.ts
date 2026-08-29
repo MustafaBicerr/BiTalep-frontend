@@ -21,4 +21,8 @@ export const userService = {
     const res = await repositories.users.updateRole(id, role)
     return res.data
   },
+  setActive: async (id: string, active: boolean) => {
+    const res = await repositories.users.setActive(id, active)
+    return res.data
+  },
 }

@@ -7,6 +7,8 @@ export function statusKey(status: RequestStatus): string {
       return 'new'
     case RequestStatus.IN_REVIEW:
       return 'inReview'
+    case RequestStatus.NEEDS_UPDATE:
+      return 'needsUpdate'
     case RequestStatus.APPROVED:
       return 'approved'
     case RequestStatus.REJECTED:

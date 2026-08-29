@@ -34,3 +34,14 @@ export function useUpdateUserRole() {
     },
   })
 }
+
+export function useSetUserActive() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, active }: { id: string; active: boolean }) =>
+      userService.setActive(id, active),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ['users'] })
+    },
+  })
+}

@@ -31,7 +31,7 @@ export function useCreateRequest() {
     mutationFn: (payload: CreateApplicationRequest) => requestService.create(payload),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ['requests'] })
-      void qc.invalidateQueries({ queryKey: queryKeys.dashboard })
+      void qc.invalidateQueries({ queryKey: queryKeys.dashboard() })
     },
   })
 }
@@ -44,7 +44,7 @@ export function useUpdateRequest() {
     onSuccess: (_r, vars) => {
       void qc.invalidateQueries({ queryKey: ['requests'] })
       void qc.invalidateQueries({ queryKey: queryKeys.request(vars.id) })
-      void qc.invalidateQueries({ queryKey: queryKeys.dashboard })
+      void qc.invalidateQueries({ queryKey: queryKeys.dashboard() })
     },
   })
 }
@@ -55,7 +55,7 @@ export function useDeleteRequest() {
     mutationFn: (id: string) => requestService.delete(id),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ['requests'] })
-      void qc.invalidateQueries({ queryKey: queryKeys.dashboard })
+      void qc.invalidateQueries({ queryKey: queryKeys.dashboard() })
     },
   })
 }
@@ -67,7 +67,7 @@ export function useStartReview() {
     onSuccess: (_r, id) => {
       void qc.invalidateQueries({ queryKey: ['requests'] })
       void qc.invalidateQueries({ queryKey: queryKeys.request(id) })
-      void qc.invalidateQueries({ queryKey: queryKeys.dashboard })
+      void qc.invalidateQueries({ queryKey: queryKeys.dashboard() })
       void qc.invalidateQueries({ queryKey: ['notifications'] })
     },
   })
@@ -79,7 +79,7 @@ export function useApproveRequest() {
     mutationFn: (id: string) => requestService.approve(id),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ['requests'] })
-      void qc.invalidateQueries({ queryKey: queryKeys.dashboard })
+      void qc.invalidateQueries({ queryKey: queryKeys.dashboard() })
       void qc.invalidateQueries({ queryKey: ['notifications'] })
     },
   })
@@ -92,7 +92,21 @@ export function useRejectRequest() {
       requestService.reject(id, reason),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ['requests'] })
-      void qc.invalidateQueries({ queryKey: queryKeys.dashboard })
+      void qc.invalidateQueries({ queryKey: queryKeys.dashboard() })
+      void qc.invalidateQueries({ queryKey: ['notifications'] })
+    },
+  })
+}
+
+export function useNeedsUpdateRequest() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, reason }: { id: string; reason?: string }) =>
+      requestService.needsUpdate(id, reason),
+    onSuccess: (_r, vars) => {
+      void qc.invalidateQueries({ queryKey: ['requests'] })
+      void qc.invalidateQueries({ queryKey: queryKeys.request(vars.id) })
+      void qc.invalidateQueries({ queryKey: queryKeys.dashboard() })
       void qc.invalidateQueries({ queryKey: ['notifications'] })
     },
   })

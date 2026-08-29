@@ -1,6 +1,7 @@
 {
   "new": "New",
   "inReview": "In review",
+  "needsUpdate": "Needs update",
   "approved": "Approved",
   "rejected": "Rejected",
   "cancelled": "Cancelled"

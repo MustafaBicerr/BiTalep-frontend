@@ -1,4 +1,5 @@
 import axios, { AxiosError, type AxiosResponse, type InternalAxiosRequestConfig } from 'axios'
+import { queryClient } from '@/lib/queryClient'
 import { ApiError, type ApiErrorResponse, type FieldError } from '@/types/api.types'
 import { useAuthStore } from '@/stores/authStore'
 
@@ -92,13 +93,16 @@ api.interceptors.response.use(
         return api.request(original)
       }
       useAuthStore.getState().clearAuth()
+      queryClient.clear()
       if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/login')) {
         window.location.assign('/login')
       }
     } else if (error.response?.status === 401 && isAuthPath && url.includes('/api/auth/refresh')) {
       useAuthStore.getState().clearAuth()
+      queryClient.clear()
     } else if (error.response?.status === 401 && !isAuthPath) {
       useAuthStore.getState().clearAuth()
+      queryClient.clear()
       if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/login')) {
         window.location.assign('/login')
       }

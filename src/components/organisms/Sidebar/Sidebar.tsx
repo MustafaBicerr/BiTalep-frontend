@@ -98,11 +98,11 @@ function NavList({ collapsed, onNavigate }: { collapsed: boolean; onNavigate?: (
   return (
     <TooltipProvider delayDuration={200}>
       <nav className="flex min-h-0 flex-1 flex-col">
-        <ul className="flex flex-1 flex-col gap-1 overflow-y-auto p-3">
+        <ul className="flex flex-1 flex-col gap-3 overflow-y-auto p-3">
           {NAV_ITEMS.map(renderItem)}
         </ul>
         <Separator className="bg-white/10" />
-        <ul className="flex shrink-0 flex-col gap-1 p-3">
+        <ul className="flex shrink-0 flex-col gap-3 p-3">
           {BOTTOM_ITEMS.map(renderItem)}
         </ul>
       </nav>

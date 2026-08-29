@@ -18,7 +18,7 @@ export function useNotifications(params?: NotificationListParams) {
 export function useUnreadCount() {
   const token = useAuthStore((s) => s.token)
   return useQuery({
-    queryKey: queryKeys.unreadCount,
+    queryKey: queryKeys.unreadCount(),
     queryFn: () => notificationService.getUnreadCount(),
     enabled: Boolean(token),
     ...cacheTimes.notifications,
@@ -32,7 +32,7 @@ export function useMarkRead() {
     mutationFn: (id: string) => notificationService.markRead(id),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['notifications'] })
-      void queryClient.invalidateQueries({ queryKey: queryKeys.unreadCount })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.unreadCount() })
     },
   })
 }
@@ -43,7 +43,7 @@ export function useMarkAllRead() {
     mutationFn: () => notificationService.markAllRead(),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['notifications'] })
-      void queryClient.invalidateQueries({ queryKey: queryKeys.unreadCount })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.unreadCount() })
     },
   })
 }

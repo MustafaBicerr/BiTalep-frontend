@@ -8,7 +8,7 @@ import type { UpdateProfileRequest } from '@/types/user.types'
 export function useProfile() {
   const token = useAuthStore((s) => s.token)
   return useQuery({
-    queryKey: queryKeys.profile,
+    queryKey: queryKeys.profile(),
     queryFn: () => authService.getCurrentUser(),
     enabled: Boolean(token),
     ...cacheTimes.userProfile,
@@ -23,8 +23,8 @@ export function useUpdateProfile() {
     mutationFn: (data: UpdateProfileRequest) => userService.updateProfile(data),
     onSuccess: (user) => {
       setUser(user)
-      void queryClient.invalidateQueries({ queryKey: queryKeys.profile })
-      void queryClient.invalidateQueries({ queryKey: queryKeys.authMe })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.profile() })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.authMe() })
     },
   })
 }

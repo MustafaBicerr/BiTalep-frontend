@@ -54,4 +54,8 @@ export const requestService = {
     const res = await repositories.requests.reject(id, reason)
     return res.data
   },
+  needsUpdate: async (id: string, reason?: string) => {
+    const res = await repositories.requests.needsUpdate(id, reason)
+    return res.data
+  },
 }

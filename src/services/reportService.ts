@@ -35,7 +35,10 @@ export function summarize(rows: ApplicationResponse[]): ReportSummary {
     approved,
     rejected,
     pending: rows.filter(
-      (r) => r.status === RequestStatus.NEW || r.status === RequestStatus.IN_REVIEW,
+      (r) =>
+        r.status === RequestStatus.NEW ||
+        r.status === RequestStatus.IN_REVIEW ||
+        r.status === RequestStatus.NEEDS_UPDATE,
     ).length,
     approvalRate: decided === 0 ? 0 : Math.round((approved / decided) * 100),
   }

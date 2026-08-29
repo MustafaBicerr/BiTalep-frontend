@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
@@ -16,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { useUploadFile } from '@/hooks/useFiles'
 import { useCreateRequest } from '@/hooks/useRequests'
 import { FormType } from '@/types/enums'
 
@@ -23,6 +25,8 @@ export function NewRequestPage() {
   const { t } = useTranslation(['requests', 'forms', 'common'])
   const navigate = useNavigate()
   const create = useCreateRequest()
+  const upload = useUploadFile()
+  const [files, setFiles] = useState<File[]>([])
 
   const schema = z.object({
     title: z.string().min(1, t('forms:validation.required')).max(100),
@@ -39,18 +43,22 @@ export function NewRequestPage() {
 
   const onSubmit = form.handleSubmit(async (values) => {
     try {
-      await create.mutateAsync(values)
+      const created = await create.mutateAsync(values)
+      for (const file of files) {
+        await upload.mutateAsync({ file, applicationId: created.id })
+      }
       toast.success(t('common:toast.success.created'))
-      navigate('/requests')
+      navigate(`/requests/${created.id}`)
     } catch {
       toast.error(t('common:toast.error.generic'))
     }
   })
 
   const description = form.watch('description') ?? ''
+  const pending = create.isPending || upload.isPending
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6">
+    <div className="mx-auto max-w-3xl space-y-6">
       <h1 className="text-h1">{t('requests:newTitle')}</h1>
       <form className="space-y-4 rounded-lg border border-border bg-card p-6" onSubmit={onSubmit}>
         <FormField id="title" label={t('requests:fields.title')} required error={form.formState.errors.title?.message}>
@@ -81,8 +89,15 @@ export function NewRequestPage() {
             </SelectContent>
           </Select>
         </FormField>
-        <Button type="submit" disabled={create.isPending}>
-          {create.isPending ? <Spinner size={16} /> : null}
+        <FormField id="attachments" label={t('requests:fields.attachments')}>
+          <Input
+            type="file"
+            multiple
+            onChange={(e) => setFiles(Array.from(e.target.files ?? []))}
+          />
+        </FormField>
+        <Button type="submit" disabled={pending}>
+          {pending ? <Spinner size={16} /> : null}
           {t('common:actions.submit')}
         </Button>
       </form>

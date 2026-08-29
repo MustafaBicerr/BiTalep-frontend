@@ -55,6 +55,7 @@ const KPI_CARDS: KpiCardConfig[] = [
 const STATUS_COLOR: Record<RequestStatus, string> = {
   NEW: 'var(--color-status-new)',
   IN_REVIEW: 'var(--color-status-review)',
+  NEEDS_UPDATE: 'var(--color-status-needs-update)',
   APPROVED: 'var(--color-status-approved)',
   REJECTED: 'var(--color-status-rejected)',
   CANCELLED: 'var(--color-status-cancelled)',

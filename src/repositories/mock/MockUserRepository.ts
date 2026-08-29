@@ -53,4 +53,10 @@ export class MockUserRepository implements IUserRepository {
     MockErrorInjector.maybeThrow()
     return { data: mockStore.updateUserRole(id, role) }
   }
+
+  async setActive(id: string, active: boolean) {
+    await MockDelay.wait('normal')
+    MockErrorInjector.maybeThrow()
+    return { data: mockStore.setUserActive(id, active) }
+  }
 }

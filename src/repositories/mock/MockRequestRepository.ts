@@ -71,4 +71,13 @@ export class MockRequestRepository implements IRequestRepository {
       ),
     }
   }
+
+  async needsUpdate(id: string, reason?: string) {
+    await MockDelay.wait('normal')
+    MockErrorInjector.maybeThrow()
+    const actor = mockStore.requireCurrentUser()
+    return {
+      data: mockStore.requestNeedsUpdate(id, actor.id, reason),
+    }
+  }
 }

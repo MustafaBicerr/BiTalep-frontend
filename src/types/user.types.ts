@@ -44,4 +44,5 @@ export interface UserEntity {
   department: Department
   tenantId: string
   createdDate: string
+  active?: boolean
 }

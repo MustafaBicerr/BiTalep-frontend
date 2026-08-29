@@ -27,4 +27,10 @@ export class MockFileRepository implements IFileRepository {
     MockErrorInjector.maybeThrow()
     return { data: mockStore.listAttachmentsByRequest(applicationId) }
   }
+
+  async listAll() {
+    await MockDelay.wait('normal')
+    MockErrorInjector.maybeThrow()
+    return { data: mockStore.listAllAttachments() }
+  }
 }

@@ -19,12 +19,15 @@ import {
 import {
   useApproveRequest,
   useDeleteRequest,
+  useNeedsUpdateRequest,
   useRejectRequest,
   useRequest,
+  useStartReview,
 } from '@/hooks/useRequests'
 import { useAuthStore } from '@/stores/authStore'
 import { RequestStatus, UserRole } from '@/types/enums'
 import { formatDateTime } from '@/utils/formatDate'
+import { isPersonnelMutable, personnelLockKey } from '@/utils/requestAccess'
 
 export function RequestDetailPage() {
   const { id } = useParams()
@@ -37,20 +40,26 @@ export function RequestDetailPage() {
   const approve = useApproveRequest()
   const reject = useRejectRequest()
   const remove = useDeleteRequest()
+  const startReview = useStartReview()
+  const needsUpdate = useNeedsUpdateRequest()
 
   const [approveOpen, setApproveOpen] = useState(false)
   const [rejectOpen, setRejectOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
+  const [needsUpdateOpen, setNeedsUpdateOpen] = useState(false)
   const [reason, setReason] = useState('')
 
   if (isLoading || !data) {
     return <DetailSkeleton />
   }
 
-  const canEdit = data.status === RequestStatus.NEW && data.applicantId === userId
-  const canAdminAct =
-    role === UserRole.ADMIN &&
-    (data.status === RequestStatus.IN_REVIEW || data.status === RequestStatus.NEW)
+  const canEdit = isPersonnelMutable(data.status) && data.applicantId === userId
+  const isAdmin = role === UserRole.ADMIN
+  const canReview = isAdmin && data.status === RequestStatus.NEW
+  const canDecide = isAdmin && data.status === RequestStatus.IN_REVIEW
+  const canRequestUpdate =
+    isAdmin && (data.status === RequestStatus.NEW || data.status === RequestStatus.IN_REVIEW)
+  const lockKey = !canEdit && data.applicantId === userId ? personnelLockKey(data.status) : null
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
@@ -63,6 +72,17 @@ export function RequestDetailPage() {
         </div>
         <StatusBadge status={data.status} />
       </div>
+
+      {data.status === RequestStatus.NEEDS_UPDATE && data.updateReason ? (
+        <p className="rounded-md border border-status-needsUpdate/30 bg-status-needsUpdate/10 px-4 py-3 text-sm">
+          {t('requests:needsUpdateBanner')} {data.updateReason}
+        </p>
+      ) : null}
+      {lockKey ? (
+        <p className="rounded-md border border-border bg-muted px-4 py-3 text-sm text-muted-foreground">
+          {t(`requests:${lockKey}`)}
+        </p>
+      ) : null}
 
       <section className="rounded-lg border border-border bg-card p-6">
         <p className="whitespace-pre-wrap text-base">{data.description}</p>
@@ -117,13 +137,32 @@ export function RequestDetailPage() {
             </Button>
           </>
         ) : null}
-        {canAdminAct ? (
+        {canReview ? (
+          <Button
+            variant="outline"
+            disabled={startReview.isPending}
+            onClick={() =>
+              void startReview
+                .mutateAsync(data.id)
+                .then(() => toast.success(t('requests:explorer.reviewStarted')))
+                .catch(() => toast.error(t('common:toast.error.conflict')))
+            }
+          >
+            {t('requests:explorer.startReview')}
+          </Button>
+        ) : null}
+        {canDecide ? (
           <>
             <Button onClick={() => setApproveOpen(true)}>{t('common:admin.approve')}</Button>
             <Button variant="destructive" onClick={() => setRejectOpen(true)}>
               {t('common:admin.reject')}
             </Button>
           </>
+        ) : null}
+        {canRequestUpdate ? (
+          <Button variant="outline" onClick={() => setNeedsUpdateOpen(true)}>
+            {t('requests:needsUpdateTitle')}
+          </Button>
         ) : null}
         <Button variant="ghost" onClick={() => navigate('/requests')}>
           {t('common:actions.back')}
@@ -185,6 +224,38 @@ export function RequestDetailPage() {
               }}
             >
               {t('common:admin.reject')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={needsUpdateOpen} onOpenChange={setNeedsUpdateOpen}>
+        <DialogContent className="max-w-[400px]">
+          <DialogHeader>
+            <DialogTitle>{t('requests:needsUpdateTitle')}</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">{t('requests:needsUpdateDescription')}</p>
+          <Textarea
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            placeholder={t('requests:needsUpdateReason')}
+          />
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setNeedsUpdateOpen(false)}>
+              {t('common:actions.cancel')}
+            </Button>
+            <Button
+              onClick={async () => {
+                try {
+                  await needsUpdate.mutateAsync({ id: data.id, reason })
+                  toast.success(t('common:toast.success.saved'))
+                  setNeedsUpdateOpen(false)
+                } catch {
+                  toast.error(t('common:toast.error.conflict'))
+                }
+              }}
+            >
+              {t('requests:needsUpdateTitle')}
             </Button>
           </DialogFooter>
         </DialogContent>

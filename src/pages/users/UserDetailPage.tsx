@@ -1,5 +1,5 @@
-import { ArrowLeft, Copy, ListFilter, Mail } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { ArrowLeft, Copy, ListFilter, Mail, Trash2 } from 'lucide-react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'sonner'
@@ -26,7 +26,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { useInfiniteRequests } from '@/hooks/useInfiniteRequests'
 import { useRequestCounts } from '@/hooks/useRequestCounts'
-import { useUpdateUserRole, useUser } from '@/hooks/useUser'
+import { useSetUserActive, useUpdateUserRole, useUser } from '@/hooks/useUser'
 import { useAuthStore } from '@/stores/authStore'
 import { RequestStatus, UserRole } from '@/types/enums'
 import { cn } from '@/utils/cn'
@@ -66,15 +66,19 @@ export function UserDetailPage() {
   const [drilldown, setDrilldown] = useState<{ preset: ExplorerPreset; title: string } | null>(null)
   const [scrollRoot, setScrollRoot] = useState<HTMLDivElement | null>(null)
   const [pendingRole, setPendingRole] = useState<UserRole | null>(null)
+  const [deactivateOpen, setDeactivateOpen] = useState(false)
+  const [visibleRows, setVisibleRows] = useState(VISIBLE_ROWS)
+  const [pastSectionEl, setPastSectionEl] = useState<HTMLElement | null>(null)
 
   const { data: user, isLoading, isError } = useUser(userId)
   const updateRole = useUpdateUserRole()
+  const setActive = useSetUserActive()
   const sort = SORTS.find((s) => s.id === sortId) ?? SORTS[0]
 
   const countBuckets = useMemo(
     () => ({
       total: { applicantId: userId },
-      pending: { applicantId: userId, status: [RequestStatus.NEW, RequestStatus.IN_REVIEW] },
+      pending: { applicantId: userId, status: [RequestStatus.NEW, RequestStatus.IN_REVIEW, RequestStatus.NEEDS_UPDATE] },
       approved: { applicantId: userId, status: [RequestStatus.APPROVED] },
       rejected: { applicantId: userId, status: [RequestStatus.REJECTED] },
     }),
@@ -88,6 +92,18 @@ export function UserDetailPage() {
     { applicantId: userId, sortBy: sort?.sortBy, sortOrder: sort?.sortOrder },
     { enabled: isAdmin && Boolean(userId) },
   )
+
+  useEffect(() => {
+    const measure = () => {
+      const top = pastSectionEl?.getBoundingClientRect().top ?? 280
+      const available = window.innerHeight - top - 88
+      const rows = Math.max(5, Math.floor((available - HEADER_HEIGHT) / ROW_HEIGHT))
+      setVisibleRows(rows)
+    }
+    measure()
+    window.addEventListener('resize', measure)
+    return () => window.removeEventListener('resize', measure)
+  }, [pastSectionEl, requests.totalItems])
 
   if (!isAdmin) {
     return <EmptyState title={t('common:toast.error.forbidden')} />
@@ -129,6 +145,17 @@ export function UserDetailPage() {
       await updateRole.mutateAsync({ id: user.id, role })
       toast.success(t('common:toast.success.saved'))
       setPendingRole(null)
+    } catch {
+      toast.error(t('common:toast.error.generic'))
+    }
+  }
+
+  const deactivate = async () => {
+    try {
+      await setActive.mutateAsync({ id: user.id, active: false })
+      toast.success(t('common:toast.success.saved'))
+      setDeactivateOpen(false)
+      navigate('/users', { replace: true })
     } catch {
       toast.error(t('common:toast.error.generic'))
     }
@@ -240,7 +267,10 @@ export function UserDetailPage() {
         </div>
       </section>
 
-      <section className="rounded-lg border border-border bg-card p-4 shadow-sm">
+      <section
+        ref={setPastSectionEl}
+        className="rounded-lg border border-border bg-card p-4 shadow-sm"
+      >
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
           <h2 className="flex items-center gap-2 text-h3">
             {t('common:users.pastRequests')}
@@ -275,7 +305,7 @@ export function UserDetailPage() {
         ) : (
           <ScrollPane
             ref={setScrollRoot}
-            maxHeight={HEADER_HEIGHT + VISIBLE_ROWS * ROW_HEIGHT}
+            maxHeight={HEADER_HEIGHT + visibleRows * ROW_HEIGHT}
             label={t('common:users.pastRequests')}
           >
             <Table>
@@ -324,6 +354,19 @@ export function UserDetailPage() {
         )}
       </section>
 
+      {user.id !== currentUser?.id ? (
+        <div className="flex justify-end">
+          <Button
+            type="button"
+            variant="destructive"
+            onClick={() => setDeactivateOpen(true)}
+          >
+            <Trash2 aria-hidden className="mr-1 h-4 w-4" />
+            {t('common:users.remove')}
+          </Button>
+        </div>
+      ) : null}
+
       <RequestExplorerDialog
         open={drilldown != null}
         onOpenChange={(open) => !open && setDrilldown(null)}
@@ -347,6 +390,19 @@ export function UserDetailPage() {
         loading={updateRole.isPending}
         onConfirm={() => {
           if (pendingRole) void changeRole(pendingRole)
+        }}
+      />
+
+      <ConfirmDialog
+        open={deactivateOpen}
+        onOpenChange={setDeactivateOpen}
+        title={t('common:users.removeConfirmTitle')}
+        description={t('common:users.removeConfirmDescription', { name: fullName })}
+        confirmLabel={t('common:users.remove')}
+        destructive
+        loading={setActive.isPending}
+        onConfirm={() => {
+          void deactivate()
         }}
       />
     </div>

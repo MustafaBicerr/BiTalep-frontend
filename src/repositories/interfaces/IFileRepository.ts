@@ -6,4 +6,5 @@ export interface IFileRepository {
   delete(id: string): Promise<void>
   getById(id: string): Promise<ApiSuccessResponse<AttachmentResponse>>
   listByRequest(applicationId: string): Promise<ApiSuccessResponse<AttachmentResponse[]>>
+  listAll(): Promise<ApiSuccessResponse<AttachmentResponse[]>>
 }

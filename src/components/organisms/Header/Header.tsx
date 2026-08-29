@@ -11,6 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { useAuth } from '@/hooks/useAuth'
 import { useUnreadCount } from '@/hooks/useNotifications'
 import { useAuthStore } from '@/stores/authStore'
 import { useUiStore } from '@/stores/uiStore'
@@ -20,7 +21,7 @@ export function Header() {
   const { t } = useTranslation(['common', 'nav', 'profile', 'notifications'])
   const navigate = useNavigate()
   const user = useAuthStore((s) => s.user)
-  const logout = useAuthStore((s) => s.logout)
+  const { logout } = useAuth()
   const setMobileMenuOpen = useUiStore((s) => s.setMobileMenuOpen)
   const setGlobalSearchOpen = useUiStore((s) => s.setGlobalSearchOpen)
   const setNotificationPanelOpen = useUiStore((s) => s.setNotificationPanelOpen)
@@ -113,8 +114,9 @@ export function Header() {
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={() => {
-                logout()
-                navigate('/login', { replace: true })
+                void logout().finally(() => {
+                  navigate('/login', { replace: true })
+                })
               }}
             >
               {t('profile:logout')}

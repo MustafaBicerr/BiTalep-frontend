@@ -32,6 +32,7 @@
   /* ── Status ── */
   --color-status-new: #2563eb;
   --color-status-review: #d97706;
+  --color-status-needs-update: #7c3aed;
   --color-status-approved: #16a34a;
   --color-status-rejected: #dc2626;
   --color-status-cancelled: #64748b;

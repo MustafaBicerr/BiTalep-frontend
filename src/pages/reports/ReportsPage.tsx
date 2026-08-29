@@ -1,5 +1,5 @@
 import { Download, RotateCcw } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
@@ -33,13 +33,27 @@ const SAMPLE_SIZE = 10
 const STATUS_COLOR: Record<RequestStatus, string> = {
   NEW: 'var(--color-status-new)',
   IN_REVIEW: 'var(--color-status-review)',
+  NEEDS_UPDATE: 'var(--color-status-needs-update)',
   APPROVED: 'var(--color-status-approved)',
   REJECTED: 'var(--color-status-rejected)',
   CANCELLED: 'var(--color-status-cancelled)',
 }
 
-function isoDate(date: Date) {
-  return date.toISOString().slice(0, 10)
+function localYmd(date: Date) {
+  const y = date.getFullYear()
+  const m = String(date.getMonth() + 1).padStart(2, '0')
+  const d = String(date.getDate()).padStart(2, '0')
+  return `${y}-${m}-${d}`
+}
+
+function startOfDayIso(ymd: string) {
+  const [y, m, d] = ymd.split('-').map(Number)
+  return new Date(y, m - 1, d, 0, 0, 0, 0).toISOString()
+}
+
+function endOfDayIso(ymd: string) {
+  const [y, m, d] = ymd.split('-').map(Number)
+  return new Date(y, m - 1, d, 23, 59, 59, 999).toISOString()
 }
 
 function rangeForPreset(preset: Exclude<DatePreset, 'custom'>) {
@@ -49,13 +63,13 @@ function rangeForPreset(preset: Exclude<DatePreset, 'custom'>) {
 
   switch (preset) {
     case 'thisMonth':
-      return { from: isoDate(new Date(year, month, 1)), to: isoDate(new Date(year, month + 1, 0)) }
+      return { from: localYmd(new Date(year, month, 1)), to: localYmd(new Date(year, month + 1, 0)) }
     case 'lastMonth':
-      return { from: isoDate(new Date(year, month - 1, 1)), to: isoDate(new Date(year, month, 0)) }
+      return { from: localYmd(new Date(year, month - 1, 1)), to: localYmd(new Date(year, month, 0)) }
     case 'last3Months':
-      return { from: isoDate(new Date(year, month - 2, 1)), to: isoDate(new Date(year, month + 1, 0)) }
+      return { from: localYmd(new Date(year, month - 2, 1)), to: localYmd(new Date(year, month + 1, 0)) }
     case 'thisYear':
-      return { from: isoDate(new Date(year, 0, 1)), to: isoDate(new Date(year, 11, 31)) }
+      return { from: localYmd(new Date(year, 0, 1)), to: localYmd(new Date(year, 11, 31)) }
   }
 }
 
@@ -76,8 +90,8 @@ export function ReportsPage() {
   const params = useMemo<Omit<RequestListParams, 'page' | 'pageSize'>>(() => {
     const range = datePreset === 'custom' ? { from: customFrom, to: customTo } : rangeForPreset(datePreset)
     return {
-      dateFrom: range.from || undefined,
-      dateTo: range.to || undefined,
+      dateFrom: range.from ? startOfDayIso(range.from) : undefined,
+      dateTo: range.to ? endOfDayIso(range.to) : undefined,
       applicantId: scope === 'person' ? applicantId : undefined,
       department: scope === 'department' && departments.length ? departments : undefined,
       status: statuses.length ? statuses : undefined,
@@ -98,6 +112,12 @@ export function ReportsPage() {
     placeholderData: keepPreviousData,
     ...cacheTimes.report,
   })
+
+  useEffect(() => {
+    if (query.isError) {
+      toast.error(t('common:toast.error.generic'))
+    }
+  }, [query.isError, t])
 
   const labels = useMemo<ExportLabels>(
     () => ({

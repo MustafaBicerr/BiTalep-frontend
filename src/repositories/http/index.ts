@@ -75,6 +75,10 @@ export class HttpRequestRepository implements IRequestRepository {
     const { data } = await api.put(`/api/forms/${id}/reject`, { reason })
     return data
   }
+  async needsUpdate(id: string, reason?: string) {
+    const { data } = await api.put(`/api/forms/${id}/needs-update`, { reason })
+    return data
+  }
 }
 
 export class HttpFileRepository implements IFileRepository {
@@ -121,6 +125,10 @@ export class HttpUserRepository implements IUserRepository {
   }
   async updateRole(id: string, role: UserRole) {
     const { data } = await api.put(`/api/users/${id}/role`, { role })
+    return data
+  }
+  async setActive(id: string, active: boolean) {
+    const { data } = await api.put(`/api/users/${id}/active`, { active })
     return data
   }
 }

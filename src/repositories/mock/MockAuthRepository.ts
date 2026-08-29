@@ -29,11 +29,12 @@ export class MockAuthRepository implements IAuthRepository {
     await MockDelay.wait('normal')
     MockErrorInjector.maybeThrow()
 
-    const user = mockStore.createUser({
+    const user = mockStore.registerAdmin({
       name: request.name,
       surname: request.surname,
       email: request.email,
       password: request.password,
+      companyName: request.companyName,
     })
     const token = mockStore.createSession(user.id)
     const data: LoginResponse = {

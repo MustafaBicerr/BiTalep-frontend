@@ -19,4 +19,5 @@ export interface IRequestRepository {
   startReview(id: string): Promise<ApiSuccessResponse<ApplicationResponse>>
   approve(id: string): Promise<ApiSuccessResponse<ApplicationResponse>>
   reject(id: string, reason?: string): Promise<ApiSuccessResponse<ApplicationResponse>>
+  needsUpdate(id: string, reason?: string): Promise<ApiSuccessResponse<ApplicationResponse>>
 }

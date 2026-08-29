@@ -4,7 +4,7 @@ import { companyService } from '@/services/companyService'
 
 export function useCompany() {
   return useQuery({
-    queryKey: queryKeys.company,
+    queryKey: queryKeys.company(),
     queryFn: () => companyService.getCurrent(),
     ...cacheTimes.userProfile,
   })

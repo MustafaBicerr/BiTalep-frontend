@@ -39,7 +39,7 @@ export type ExplorerPreset = 'all' | 'pending' | 'approved' | 'rejected'
 
 const PRESET_STATUSES: Record<ExplorerPreset, RequestStatus[]> = {
   all: [],
-  pending: [RequestStatus.NEW, RequestStatus.IN_REVIEW],
+  pending: [RequestStatus.NEW, RequestStatus.IN_REVIEW, RequestStatus.NEEDS_UPDATE],
   approved: [RequestStatus.APPROVED],
   rejected: [RequestStatus.REJECTED],
 }

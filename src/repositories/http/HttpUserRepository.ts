@@ -42,4 +42,12 @@ export class HttpUserRepository implements IUserRepository {
     )
     return data
   }
+
+  async setActive(id: string, active: boolean) {
+    const { data } = await api.put<ApiSuccessResponse<UserResponse>>(
+      `/api/users/${id}/active`,
+      { active },
+    )
+    return data
+  }
 }

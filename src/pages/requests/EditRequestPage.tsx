@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -18,8 +18,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { useUploadFile } from '@/hooks/useFiles'
 import { useRequest, useUpdateRequest } from '@/hooks/useRequests'
 import { FormType, RequestStatus } from '@/types/enums'
+import { isPersonnelMutable, personnelLockKey } from '@/utils/requestAccess'
 
 export function EditRequestPage() {
   const { id } = useParams()
@@ -28,6 +30,8 @@ export function EditRequestPage() {
   const navigate = useNavigate()
   const { data, isLoading } = useRequest(requestId)
   const update = useUpdateRequest()
+  const upload = useUploadFile()
+  const [files, setFiles] = useState<File[]>([])
 
   const schema = z.object({
     title: z.string().min(1).max(100),
@@ -43,8 +47,8 @@ export function EditRequestPage() {
 
   useEffect(() => {
     if (!data) return
-    if (data.status !== RequestStatus.NEW) {
-      toast.error(t('requests:cannotEdit'))
+    if (!isPersonnelMutable(data.status)) {
+      toast.error(t(`requests:${personnelLockKey(data.status)}`))
       navigate(`/requests/${requestId}`, { replace: true })
       return
     }
@@ -61,8 +65,15 @@ export function EditRequestPage() {
 
   const onSubmit = form.handleSubmit(async (values) => {
     try {
+      for (const file of files) {
+        await upload.mutateAsync({ file, applicationId: requestId })
+      }
       await update.mutateAsync({ id: requestId, payload: values })
-      toast.success(t('common:toast.success.saved'))
+      toast.success(
+        data.status === RequestStatus.NEEDS_UPDATE
+          ? t('requests:resubmitted')
+          : t('common:toast.success.saved'),
+      )
       navigate(`/requests/${requestId}`)
     } catch {
       toast.error(t('common:toast.error.generic'))
@@ -70,8 +81,14 @@ export function EditRequestPage() {
   })
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6">
+    <div className="mx-auto max-w-3xl space-y-6">
       <h1 className="text-h1">{t('requests:editTitle')}</h1>
+      {data.status === RequestStatus.NEEDS_UPDATE ? (
+        <p className="rounded-md border border-status-needsUpdate/30 bg-status-needsUpdate/10 px-4 py-3 text-sm">
+          {t('requests:needsUpdateBanner')}
+          {data.updateReason ? ` ${data.updateReason}` : ''}
+        </p>
+      ) : null}
       <form className="space-y-4 rounded-lg border border-border bg-card p-6" onSubmit={onSubmit}>
         <FormField id="title" label={t('requests:fields.title')} required>
           <Input {...form.register('title')} />
@@ -96,8 +113,15 @@ export function EditRequestPage() {
             </SelectContent>
           </Select>
         </FormField>
-        <Button type="submit" disabled={update.isPending}>
-          {update.isPending ? <Spinner size={16} /> : null}
+        <FormField id="attachments" label={t('requests:fields.attachments')}>
+          <Input
+            type="file"
+            multiple
+            onChange={(e) => setFiles(Array.from(e.target.files ?? []))}
+          />
+        </FormField>
+        <Button type="submit" disabled={update.isPending || upload.isPending}>
+          {update.isPending || upload.isPending ? <Spinner size={16} /> : null}
           {t('common:actions.save')}
         </Button>
       </form>

@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { cacheTimes, queryKeys } from '@/lib/queryClient'
+import { cacheTimes, clearSessionCache, queryKeys } from '@/lib/queryClient'
 import { authService } from '@/services/authService'
 import { userService } from '@/services/userService'
 import { useAuthStore } from '@/stores/authStore'
@@ -10,6 +10,7 @@ export function useLogin() {
   const setAuth = useAuthStore((s) => s.setAuth)
   return useMutation({
     mutationFn: async (payload: LoginRequest) => {
+      clearSessionCache()
       const data = await authService.login(payload)
       setAuth(data.token, data.user, data.refreshToken)
       return data
@@ -21,6 +22,7 @@ export function useRegister() {
   const setAuth = useAuthStore((s) => s.setAuth)
   return useMutation({
     mutationFn: async (payload: RegisterRequest) => {
+      clearSessionCache()
       const data = await authService.register(payload)
       setAuth(data.token, data.user, data.refreshToken)
       return data
@@ -33,10 +35,9 @@ export function useAuth() {
   const user = useAuthStore((s) => s.user)
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   const clearAuth = useAuthStore((s) => s.clearAuth)
-  const qc = useQueryClient()
 
   const meQuery = useQuery({
-    queryKey: queryKeys.authMe,
+    queryKey: queryKeys.authMe(),
     queryFn: () => authService.getCurrentUser(),
     enabled: Boolean(token),
     ...cacheTimes.userProfile,
@@ -44,9 +45,13 @@ export function useAuth() {
 
   const logout = async () => {
     const refreshToken = useAuthStore.getState().refreshToken
-    await authService.logout(refreshToken)
+    try {
+      await authService.logout(refreshToken)
+    } catch {
+      /* still clear local session */
+    }
     clearAuth()
-    qc.clear()
+    clearSessionCache()
   }
 
   return {
@@ -61,7 +66,7 @@ export function useAuth() {
 export function useProfile() {
   const token = useAuthStore((s) => s.token)
   return useQuery({
-    queryKey: queryKeys.profile,
+    queryKey: queryKeys.profile(),
     queryFn: () => authService.getCurrentUser(),
     enabled: Boolean(token),
     ...cacheTimes.userProfile,
@@ -76,8 +81,8 @@ export function useUpdateProfile() {
     mutationFn: (data: UpdateProfileRequest) => userService.updateProfile(data),
     onSuccess: (user) => {
       setUser(user)
-      void queryClient.invalidateQueries({ queryKey: queryKeys.profile })
-      void queryClient.invalidateQueries({ queryKey: queryKeys.authMe })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.profile() })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.authMe() })
     },
   })
 }

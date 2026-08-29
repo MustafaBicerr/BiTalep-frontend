@@ -13,4 +13,5 @@ export interface IUserRepository {
   create(data: CreateUserRequest): Promise<ApiSuccessResponse<UserResponse>>
   updateProfile(data: UpdateProfileRequest): Promise<ApiSuccessResponse<UserResponse>>
   updateRole(id: string, role: UserRole): Promise<ApiSuccessResponse<UserResponse>>
+  setActive(id: string, active: boolean): Promise<ApiSuccessResponse<UserResponse>>
 }

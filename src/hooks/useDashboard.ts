@@ -6,7 +6,7 @@ import { useAuthStore } from '@/stores/authStore'
 export function useDashboard() {
   const token = useAuthStore((s) => s.token)
   return useQuery({
-    queryKey: queryKeys.dashboard,
+    queryKey: queryKeys.dashboard(),
     queryFn: () => dashboardService.getStats(),
     enabled: Boolean(token),
     ...cacheTimes.dashboard,

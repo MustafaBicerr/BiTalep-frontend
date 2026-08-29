@@ -10,6 +10,7 @@ export interface RegisterRequest {
   surname: string
   email: string
   password: string
+  companyName: string
 }
 
 export interface ForgotPasswordRequest {

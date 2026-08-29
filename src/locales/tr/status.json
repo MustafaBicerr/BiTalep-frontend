@@ -1,6 +1,7 @@
 {
   "new": "Yeni",
   "inReview": "İncelemede",
+  "needsUpdate": "Güncelleme gerekiyor",
   "approved": "Onaylandı",
   "rejected": "Reddedildi",
   "cancelled": "İptal edildi"

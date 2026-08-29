@@ -46,6 +46,7 @@ const config: Config = {
         status: {
           new: 'var(--color-status-new)',
           review: 'var(--color-status-review)',
+          needsUpdate: 'var(--color-status-needs-update)',
           approved: 'var(--color-status-approved)',
           rejected: 'var(--color-status-rejected)',
           cancelled: 'var(--color-status-cancelled)',

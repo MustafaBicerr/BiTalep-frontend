@@ -3,6 +3,7 @@ import {
   CheckCircle2,
   CircleDot,
   Clock,
+  PencilLine,
   XOctagon,
   type LucideIcon,
 } from 'lucide-react'
@@ -16,6 +17,11 @@ const STATUS_CONFIG: Record<
 > = {
   NEW: { icon: CircleDot, colorClass: 'text-status-new bg-status-new/10', key: 'new' },
   IN_REVIEW: { icon: Clock, colorClass: 'text-status-review bg-status-review/10', key: 'inReview' },
+  NEEDS_UPDATE: {
+    icon: PencilLine,
+    colorClass: 'text-status-needsUpdate bg-status-needsUpdate/10',
+    key: 'needsUpdate',
+  },
   APPROVED: {
     icon: CheckCircle2,
     colorClass: 'text-status-approved bg-status-approved/10',
@@ -61,6 +67,7 @@ export function StatusBadge({ status, variant = 'subtle', className }: StatusBad
           'inline-flex h-6 items-center gap-1 rounded-md px-2 text-xs font-medium text-white',
           status === 'NEW' && 'bg-status-new',
           status === 'IN_REVIEW' && 'bg-status-review',
+          status === 'NEEDS_UPDATE' && 'bg-status-needsUpdate',
           status === 'APPROVED' && 'bg-status-approved',
           status === 'REJECTED' && 'bg-status-rejected',
           status === 'CANCELLED' && 'bg-status-cancelled',
